@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/02 15:20:56 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/02 15:26:13 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,40 @@ public:
 	reference						operator[](difference_type n) { return (*(*this + n)); }
 };
 
-template <class Iterator>
-bool operator!=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+template < class Iterator >
+bool	operator==(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+{
+	return (lhs.base() == rhs.base());
+}
+
+template < class Iterator >
+bool	operator!=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
 {
     return (lhs.base() != rhs.base());
+}
+
+template < class Iterator >
+bool	operator<(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+{
+    return (lhs.base() < rhs.base());
+}
+
+template < class Iterator >
+bool	operator<=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+{
+    return (lhs.base() <= rhs.base());
+}
+
+template < class Iterator >
+bool	operator>(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+{
+    return (lhs.base() > rhs.base());
+}
+
+template < class Iterator >
+bool	operator>=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+{
+    return (lhs.base() >= rhs.base());
 }
 
 }
