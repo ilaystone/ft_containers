@@ -1,5 +1,5 @@
--[ ] iterator_traits
--[ ] reverse_iterator
+-[x] iterator_traits
+-[x] reverse_iterator
 -[ ] enable_if
 -[ ] is_integral
 -[ ] equal/lexographical compaire

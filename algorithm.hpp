@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Intergers.hpp                                      :+:      :+:    :+:   */
+/*   algorithm.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/30 15:24:19 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/11/30 15:25:56 by ikhadem          ###   ########.fr       */
+/*   Created: 2021/12/02 11:23:06 by ikhadem           #+#    #+#             */
+/*   Updated: 2021/12/02 12:21:00 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "iterators.hpp"
+#ifndef __ALGORITHM_HPP__
+#define __ALGORITHM_HPP__
 
-class Integers
+namespace FT
 {
-private:
-	int		m_data[200];
+}
 
-};
+#endif
