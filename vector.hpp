@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/04 13:49:50 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/06 18:43:33 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #define __VECTOR_HPP__
 
 #include "iterator_traits.hpp"
-#include <iostream>
+#include "enable_if.hpp"
+#include "is_integral.hpp"
 #include <algorithm>
 #include <memory>
 #include <limits>
@@ -23,7 +24,7 @@ namespace ft
 {
 template < class T >
 class vector_iterator
-	: public __iterator<	typename iterator_traits<T *>::iterator_category,
+	: public __iterator__<	typename iterator_traits<T *>::iterator_category,
 							typename iterator_traits<T *>::value_type,
 							typename iterator_traits<T *>::difference_type,
 							typename iterator_traits<T *>::pointer,
@@ -80,12 +81,25 @@ public:
 		__capacity(0),
 		__size(0)
 	{
-		
-		return;
+		while (n--)
+			this->push_back(val);
+		return ;
 	}
-	template < class InputIterator >
-	vector(InputIterator first, input_iterator_tag last, const allocator_type &alloc = allocator_type())
+	template < typename InputIterator >
+	vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value>)
 	{
+		InputIterator		it;
+
+		it = first;
+		this->__alloc = alloc;
+		this->__size = 0;
+		this->__capacity = 0;
+		while (it != last)
+		{
+			this->push_back(*it);
+			it++;
+		}
 		return ;
 	}
 	vector(const vector &rhs)
@@ -93,10 +107,19 @@ public:
 		*this = rhs;
 		return ;
 	}
-	~vector(void) { return; }
+	~vector(void)
+	{
+		this->clear();
+		this->__alloc.deallocate(this->__ptr, this->__capacity);
+	}
 
 	vector		&operator=(const vector &rhs)
 	{
+		size_type		i;
+
+		this->clear();
+		while (i < rhs.size())
+			this->push_back(rhs[i]);
 		return (*this);
 	}
 
@@ -110,19 +133,65 @@ public:
 	const_reverse_iterator	rend(void) const { return (reverse_iterator(begin())); }
 	size_type				size(void) const { return (this->__size); }
 	size_type				max_size(void) const { return (std::min<size_type>(std::numeric_limits<difference_type>::max(), this->__alloc.max_size())); }
-	void					resize(size_type n, value_type val = value_type()) { return; }
+	void					resize(size_type n, value_type val = value_type())
+	{
+		while (n < this->__size)
+			this->pop_back();
+		while (n > this->__size)
+			this->push_back(val);
+		return ;
+	}
 	size_type				capacity(void) const { return (__capacity); }
 	bool					empty(void) const { return (__size == 0); }
 	void					reserve(size_type n)
-	reference				operator[](size_type n) { return (*(__ptr + n)); }
-	const_reference			operator[](size_type n) { return (*(__ptr + n)); }
-	reference				at(size_type n) { return (operator[](n)); }
+	{
+		if (n > this->__capacity)
+		{
+			pointer		ptr;
+			size_type	i;
 
+			ptr = this->__alloc.allocate(n);
+			while (i < this->__size)
+			{
+				this->__alloc.construct(ptr + i, this->__ptr[i]);
+				i++;
+			}
+			this->clear();
+			this->__alloc.deallocate(this->__ptr, this->__capacity);
+			this->__ptr = ptr;
+			this->__capacity = n;
+		}
+	}
+	reference				operator[](size_type n) { return (*(__ptr + n)); }
+	const_reference			operator[](size_type n) const { return (*(__ptr + n)); }
+	reference				at(size_type n) { return (operator[](n)); }
+	const_reference			at(size_type n) const { return (operator[](n)); }
+	reference				front(void) { return (operator[](0)); }
+	const_reference			front(void) const { return (operator[](0)); }
+	reference				back(void) { return (operator[](this->__size - 1)); }
+	const_reference			back(void) const { return (operator[](this->__size - 1)); }
+	template < class InputIterator >
+	void					assign(InputIterator first, InputIterator last);
 	void					push_back(value_type const	&val)
 	{
 		__reserve_space__();
 		__alloc.construct(__ptr + __size, val);
 		__size += 1;
+	}
+	void					pop_back(void)
+	{
+		if (this->__size <= 0)
+			return ;
+		this->__size--;
+		this->__alloc.destroy(__ptr + this->__size);
+	}
+	void					clear(void)
+	{
+		size_type			i;
+		while (i < this->__size)
+			this->__alloc.destroy(this->__ptr + i);
+		this->__size = 0;
+		return ;
 	}
 
 

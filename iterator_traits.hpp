@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/03 13:56:54 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/05 22:15:14 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ struct iterator_traits<const T*>
 
 template< class Category, class T, class Distance = std::ptrdiff_t,
          class Pointer = T*, class Reference = T& >
-struct __iterator
+struct __iterator__
 {
     typedef T         							value_type;
     typedef Distance  							difference_type;
@@ -66,7 +66,7 @@ struct __iterator
 
 template < class Iterator >
 class reverse_iterator
-    : public __iterator<	typename iterator_traits<Iterator>::iterator_category,
+    : public __iterator__<	typename iterator_traits<Iterator>::iterator_category,
                       		typename iterator_traits<Iterator>::value_type,
                     		typename iterator_traits<Iterator>::difference_type,
                     		typename iterator_traits<Iterator>::pointer,
