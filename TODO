@@ -1,15 +1,83 @@
+##USEFUL TEMPLATES
+
 -[x] iterator_traits
 -[x] reverse_iterator
--[ ] enable_if
--[ ] is_integral
+-[x] enable_if
+-[x] is_integral
 -[ ] equal/lexographical compaire
 -[ ] std::pair
 -[ ] std::make_pair
+
+## VECTOR TEMPLATE
+
 -[ ] vector
+	- [ ] default constructor
+	- [ ] fill constructor
+	- [ ] range constructor
+	- [ ] copy constructor
+	- [ ] destructor
+	- [ ] operator=
+	- [ ] begin
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] end
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] rbegin
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] rend
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] size
+	- [ ] max_size
+	- [ ] resize
+	- [ ] capacity
+	- [ ] empty
+	- [ ] reserve
+	- [ ] operator[]
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] at
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] front
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] back
+		- [ ] mutable
+		- [ ] immutable
+	- [ ] assign
+		- [ ] range
+		- [ ] fill
+	- [ ] push_back
+	- [ ] pop_back
+	- [ ] insert
+		- [ ] single element
+		- [ ] fill
+		- [ ] range
+	- [ ] erase
+		- [ ] single element
+		- [ ] range
+	- [ ] swap
+	- [ ] clear
+	- [ ] get_allocator
+	- [ ] relational operators
+		- [ ] operator==
+		- [ ] operator!=
+		- [ ] operator<
+		- [ ] operator<=
+		- [ ] operator>
+		- [ ] operator>=
+	- [ ] swap (vector)
+
+## STACK TEMPLATE
+
 -[ ] stack
--[ ] black_red tree demystifying
+
+## MAP TEMPLATE
+
 -[ ] map
--[ ] set
 
 
 RESOURCES :
