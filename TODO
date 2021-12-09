@@ -11,42 +11,42 @@
 ## VECTOR TEMPLATE
 
 -[ ] vector
-	- [ ] default constructor
-	- [ ] fill constructor
-	- [ ] range constructor
-	- [ ] copy constructor
-	- [ ] destructor
-	- [ ] operator=
-	- [ ] begin
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] end
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] rbegin
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] rend
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] size
-	- [ ] max_size
-	- [ ] resize
-	- [ ] capacity
-	- [ ] empty
-	- [ ] reserve
-	- [ ] operator[]
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] at
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] front
-		- [ ] mutable
-		- [ ] immutable
-	- [ ] back
-		- [ ] mutable
-		- [ ] immutable
+	- [x] default constructor
+	- [x] fill constructor
+	- [x] range constructor
+	- [x] copy constructor
+	- [x] destructor
+	- [x] operator=
+	- [x] begin
+		- [x] mutable
+		- [x] immutable
+	- [x] end
+		- [x] mutable
+		- [x] immutable
+	- [x] rbegin
+		- [x] mutable
+		- [x] immutable
+	- [x] rend
+		- [x] mutable
+		- [x] immutable
+	- [x] size
+	- [x] max_size
+	- [x] resize
+	- [x] capacity
+	- [x] empty
+	- [!] reserve
+	- [x] operator[]
+		- [x] mutable
+		- [x] immutable
+	- [x] at
+		- [x] mutable
+		- [x] immutable
+	- [x] front
+		- [x] mutable
+		- [x] immutable
+	- [x] back
+		- [x] mutable
+		- [x] immutable
 	- [ ] assign
 		- [ ] range
 		- [ ] fill
