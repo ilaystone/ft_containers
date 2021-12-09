@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/09 14:07:23 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/09 14:15:23 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,7 @@ public:
 		__capacity(0),
 		__size(0)
 	{
-		for (; n != 0; n--)
-			this->push_back(val);
+		this->assign(n, val);
 		return ;
 	}
 	// range constructor
@@ -278,7 +277,21 @@ public:
 	**************/
 
 	template < class InputIterator >
-	void					assign(InputIterator first, InputIterator last);
+	void					assign(InputIterator first, InputIterator last,
+		typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
+	{
+		this->clear();
+		for (iterator it = first; it != last; it++)
+			this->push_back(*it);
+		return ;
+	}
+	void assign (size_type n, const value_type& val)
+	{
+		this->clear();
+		for (; n != 0; n--)
+			this->push_back(val);
+		return ;
+	}
 	void					push_back(value_type const	&val)
 	{
 		__reserve_space__();

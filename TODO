@@ -47,9 +47,9 @@
 	- [x] back
 		- [x] mutable
 		- [x] immutable
-	- [ ] assign
-		- [ ] range
-		- [ ] fill
+	- [x] assign
+		- [x] range
+		- [x] fill
 	- [ ] push_back
 	- [ ] pop_back
 	- [ ] insert
