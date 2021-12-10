@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/05 22:15:14 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/10 19:32:00 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,18 @@ template < class Iterator >
 bool	operator>=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
 {
     return (lhs.base() >= rhs.base());
+}
+
+template < class InputIterator >
+typename ft::iterator_traits<InputIterator>::diffrence_type		distance(InputIterator first, InputIterator last)
+{
+	typename std::iterator_traits<It>::difference_type result = 0;
+	while (first != last)
+	{
+		first++;
+		result++;
+	}
+	return (result);
 }
 
 }
