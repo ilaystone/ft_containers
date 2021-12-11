@@ -12,9 +12,9 @@
 
 -[ ] vector
 	- [x] default constructor
-	- [x] fill constructor
-	- [x] range constructor
-	- [x] copy constructor
+	- [!] fill constructor
+	- [!] range constructor
+	- [!] copy constructor
 	- [x] destructor
 	- [x] operator=
 	- [x] begin
@@ -50,8 +50,8 @@
 	- [x] assign
 		- [x] range
 		- [x] fill
-	- [ ] push_back
-	- [ ] pop_back
+	- [!] push_back
+	- [!] pop_back
 	- [ ] insert
 		- [ ] single element
 		- [ ] fill

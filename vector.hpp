@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/09 14:15:23 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/10 21:20:50 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,15 @@ public:
 		return;
 	}
 	// fill constructor
-	explicit vector(std::size_t n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) :
+	explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) :
 		__alloc(alloc),
 		__capacity(0),
 		__size(0)
 	{
-		this->assign(n, val);
+		this->reserve(n);
+		for (size_type i = 0; i < n; i++)
+			this->__alloc.construct(this->__ptr + i, val);
+		this->__size = n;
 		return ;
 	}
 	// range constructor
@@ -107,17 +110,14 @@ public:
 		__capacity(0),
 		__size(0)
 	{
-		InputIterator		it;
+		difference_type		dist;
 
-		it = first;
-		this->__alloc = alloc;
-		this->__size = 0;
-		this->__capacity = 0;
-		while (it != last)
-		{
-			this->push_back(*it);
-			it++;
-		}
+		dist = distance(first, last);
+		this->reserve(dist);
+		this->size = dist;
+		dist = 0;
+		for (iterator it = first; it != last; it++, dist++)
+			this->__alloc.construct(this->__ptr + dist, &(*it));
 		return ;
 	}
 	// copy constructor
@@ -295,7 +295,7 @@ public:
 	void					push_back(value_type const	&val)
 	{
 		__reserve_space__();
-		__alloc.construct(__ptr + __size, val);
+		__alloc.construct(&(*(this->end())), val);
 		__size += 1;
 	}
 	void					pop_back(void)
@@ -303,7 +303,26 @@ public:
 		if (this->__size <= 0)
 			return ;
 		this->__size--;
-		this->__alloc.destroy(__ptr + this->__size);
+		this->__alloc.destroy(&(*this->end()));
+	}
+	iterator				insert(iterator position, const value_type &val)
+	{
+		ft::vector<value_type>				tmp;
+		iterator							ret;
+
+		for (iterator it = this->begin(); it != this->end(); it++)
+		{
+			if (it == position)
+			{
+				tmp.push_back(val);
+				ret = tmp.end();
+			}
+			else
+				tmp.push_back(*it);
+		}
+		this->clear();
+		*this = tmp;
+		return (ret);
 	}
 	void					clear(void)
 	{
