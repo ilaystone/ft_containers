@@ -52,10 +52,10 @@
 		- [x] fill
 	- [!] push_back
 	- [!] pop_back
-	- [ ] insert
-		- [ ] single element
-		- [ ] fill
-		- [ ] range
+	- [x] insert
+		- [x] single element
+		- [x] fill
+		- [x] range
 	- [ ] erase
 		- [ ] single element
 		- [ ] range

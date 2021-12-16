@@ -6,12 +6,14 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/10 21:20:50 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/16 11:52:09 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
+
+#include <iostream>
 
 #include "iterator_traits.hpp"
 #include "type_traits.hpp"
@@ -51,10 +53,10 @@ public:
 	reference			operator[](difference_type n) { return (*(*this + n)); }
 	bool				operator==(vector_iterator const &rhs) const { return (m_ptr == rhs.m_ptr); }
 	bool				operator!=(vector_iterator const &rhs) const { return (m_ptr != rhs.m_ptr); }
-	bool				operator<(vector_iterator const &rhs) const { return (m_ptr > rhs.m_ptr); }
-	bool				operator<=(vector_iterator const &rhs) const { return (m_ptr >= rhs.m_ptr); }
-	bool				operator>(vector_iterator const &rhs) const { return (m_ptr < rhs.m_ptr); }
-	bool				operator>=(vector_iterator const &rhs) const { return (m_ptr <= rhs.m_ptr); }
+	bool				operator>(vector_iterator const &rhs) const { return (m_ptr > rhs.m_ptr); }
+	bool				operator>=(vector_iterator const &rhs) const { return (m_ptr >= rhs.m_ptr); }
+	bool				operator<(vector_iterator const &rhs) const { return (m_ptr < rhs.m_ptr); }
+	bool				operator<=(vector_iterator const &rhs) const { return (m_ptr <= rhs.m_ptr); }
 protected:
 	pointer			m_ptr;
 };
@@ -96,7 +98,7 @@ public:
 		__capacity(0),
 		__size(0)
 	{
-		this->reserve(n);
+		this->__ptr = this->__alloc.allocate(n);
 		for (size_type i = 0; i < n; i++)
 			this->__alloc.construct(this->__ptr + i, val);
 		this->__size = n;
@@ -113,7 +115,7 @@ public:
 		difference_type		dist;
 
 		dist = distance(first, last);
-		this->reserve(dist);
+		this->__ptr = this->__alloc.allocate(dist);
 		this->size = dist;
 		dist = 0;
 		for (iterator it = first; it != last; it++, dist++)
@@ -219,6 +221,7 @@ public:
 			size_type	i;
 
 			ptr = this->__alloc.allocate(n);
+			i = 0;
 			for (iterator it = this->begin(); it != this->end(); it++)
 			{
 				this->__alloc.construct(ptr + i, *it);
@@ -246,13 +249,13 @@ public:
 	reference				at(size_type n)
 	{
 		if (n < 0 || n > this->__size)
-			throw (std::out_of_range("vector"));
+			throw (std::out_of_range("ft::vector"));
 		return (operator[](n));
 	}
 	const_reference			at(size_type n) const
 	{
 		if (n < 0 || n > this->__size)
-			throw std::out_of_range("vector");
+			throw std::out_of_range("ft::vector");
 		return (operator[](n));
 	}
 	reference				front(void)
@@ -285,7 +288,7 @@ public:
 			this->push_back(*it);
 		return ;
 	}
-	void assign (size_type n, const value_type& val)
+	void 					assign (size_type n, const value_type& val)
 	{
 		this->clear();
 		for (; n != 0; n--)
@@ -294,9 +297,12 @@ public:
 	}
 	void					push_back(value_type const	&val)
 	{
-		__reserve_space__();
-		__alloc.construct(&(*(this->end())), val);
-		__size += 1;
+		if (this->__capacity == 0)
+			this->reserve(1);
+		else if (this->__size == this->__capacity)
+			this->reserve(this->__size * 2);
+		this->__alloc.construct(&(*(this->end())), val);
+		this->__size++;
 	}
 	void					pop_back(void)
 	{
@@ -307,22 +313,57 @@ public:
 	}
 	iterator				insert(iterator position, const value_type &val)
 	{
-		ft::vector<value_type>				tmp;
-		iterator							ret;
+		difference_type			dist = distance(this->begin(), position);
 
-		for (iterator it = this->begin(); it != this->end(); it++)
+		this->insert(position, 1, val);
+		return (iterator(&this->__ptr[dist]));
+	}
+	void					insert(iterator position, size_type n, const value_type &val)
+	{
+		difference_type			dist = distance(this->begin(), position);
+		size_type				old_size = this->__size;
+		iterator				new_pos;
+
+		if (this->__size + n > this->__capacity)
+			this->reserve(this->__capacity + n);
+		this->__size = old_size;
+		new_pos  = iterator((&this->__ptr[dist]));
+		if (new_pos != this->end())
 		{
-			if (it == position)
+			for (iterator ite = this->end() - 1; ite + 1 != new_pos; ite--)
 			{
-				tmp.push_back(val);
-				ret = tmp.end();
+				this->__alloc.construct(&(*(ite + n)), *ite);
+				this->__alloc.destroy(&(*ite));
 			}
-			else
-				tmp.push_back(*it);
 		}
-		this->clear();
-		*this = tmp;
-		return (ret);
+		for (size_type i = 0; i < n; i++)
+			this->__alloc.construct(&(*new_pos++), val);
+		this->__size += n;
+	}
+	template < class InputIterator >
+	void					insert(iterator position, InputIterator first, InputIterator last,
+		typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
+	{
+		difference_type			dist = distance(this->begin(), position);
+		size_type				n = distance(first, last);
+		size_type				old_size = this->__size;
+		iterator				new_pos;
+
+		if (this->__size + n > this->__capacity)
+			this->reserve(this->__capacity + n);
+		this->__size = old_size;
+		new_pos  = iterator((&this->__ptr[dist]));
+		if (new_pos != this->end())
+		{
+			for (iterator ite = this->end() - 1; ite + 1 != new_pos; ite--)
+			{
+				this->__alloc.construct(&(*(ite + n)), *ite);
+				this->__alloc.destroy(&(*ite));
+			}
+		}
+		for (size_type i = 0; i < n; i++)
+			this->__alloc.construct(&(*new_pos++), *first++);
+		this->__size += n;
 	}
 	void					clear(void)
 	{
@@ -334,7 +375,7 @@ public:
 	// return a copy of __alloc
 	allocator_type get_allocator() const
 	{
-		return (new allocator_type(this->__alloc));
+		return (allocator_type(this->__alloc));
 	}
 
 protected:
@@ -343,28 +384,6 @@ protected:
 	size_type			__capacity;
 	size_type			__size;
 
-private:
-	void		__reserve_space__(void)
-	{
-		if (__capacity == 0)
-		{
-			__ptr = __alloc.allocate(1);
-			__capacity = 1;
-		}
-		else if (__size == __capacity)
-		{
-			pointer new_space = __alloc.allocate(__capacity * 2);
-			for (int i = 0; i < __size; i++)
-			{
-				__alloc.construct(new_space + i , __ptr[i]);
-				__alloc.destroy(__ptr + i);
-			}
-			__alloc.deallocate(__ptr, __capacity);
-			__ptr = new_space;
-			__capacity *= 2;
-		}
-		return ;
-	}
 };
 }
 
