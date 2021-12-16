@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/16 11:52:09 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/16 11:57:59 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ public:
 	typedef typename allocator_type::pointer			pointer;
 	typedef typename allocator_type::const_pointer		const_pointer;
 	typedef ft::vector_iterator<T>						iterator;
-	typedef ft::vector_iterator<const T>				const_iterator;
+	typedef ft::vector_iterator<T>				const_iterator;
 	typedef ft::reverse_iterator<iterator>          	reverse_iterator;
     typedef ft::reverse_iterator<const_iterator>    	const_reverse_iterator;
 	typedef typename allocator_type::size_type       	size_type;
@@ -365,6 +365,10 @@ public:
 			this->__alloc.construct(&(*new_pos++), *first++);
 		this->__size += n;
 	}
+	// iterator				erase(iterator position)
+	// {
+		
+	// }
 	void					clear(void)
 	{
 		for (iterator it = this->begin(); it != this->end(); it++)
