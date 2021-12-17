@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/16 11:57:59 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/17 09:39:57 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ public:
 	typedef typename allocator_type::pointer			pointer;
 	typedef typename allocator_type::const_pointer		const_pointer;
 	typedef ft::vector_iterator<T>						iterator;
-	typedef ft::vector_iterator<T>				const_iterator;
+	typedef ft::vector_iterator<const T>				const_iterator;
 	typedef ft::reverse_iterator<iterator>          	reverse_iterator;
     typedef ft::reverse_iterator<const_iterator>    	const_reverse_iterator;
 	typedef typename allocator_type::size_type       	size_type;
@@ -95,13 +95,12 @@ public:
 	// fill constructor
 	explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) :
 		__alloc(alloc),
-		__capacity(0),
-		__size(0)
+		__capacity(n),
+		__size(n)
 	{
-		this->__ptr = this->__alloc.allocate(n);
-		for (size_type i = 0; i < n; i++)
+		this->__ptr = this->__alloc.allocate(this->__capacity);
+		for (size_type i = 0; i < this->__size; i++)
 			this->__alloc.construct(this->__ptr + i, val);
-		this->__size = n;
 		return ;
 	}
 	// range constructor
@@ -109,17 +108,14 @@ public:
 	vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
 		typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0) :
 		__alloc(alloc),
-		__capacity(0),
-		__size(0)
+		__capacity(distance(first, last)),
+		__size(distance(first, last))
 	{
-		difference_type		dist;
+		size_type	i = 0;
 
-		dist = distance(first, last);
-		this->__ptr = this->__alloc.allocate(dist);
-		this->size = dist;
-		dist = 0;
-		for (iterator it = first; it != last; it++, dist++)
-			this->__alloc.construct(this->__ptr + dist, &(*it));
+		this->__ptr = this->__alloc.allocate(this->__capacity);
+		for (iterator it = first; it != last; it++, i++)
+			this->__alloc.construct(this->__ptr + i, &(*it));
 		return ;
 	}
 	// copy constructor
@@ -199,6 +195,8 @@ public:
 	}
 	void					resize(size_type n, value_type val = value_type())
 	{
+		if (n > this->__capacity)
+			this->reserve(this->__capacity * 2);
 		while (n < this->__size)
 			this->pop_back();
 		while (n > this->__size)
@@ -207,7 +205,7 @@ public:
 	}
 	size_type				capacity(void) const
 	{
-		return (__capacity);
+		return (this->__capacity);
 	}
 	bool					empty(void) const
 	{
@@ -222,15 +220,13 @@ public:
 
 			ptr = this->__alloc.allocate(n);
 			i = 0;
-			for (iterator it = this->begin(); it != this->end(); it++)
-			{
+			for (iterator it = this->begin(); it != this->end(); it++, i++)
 				this->__alloc.construct(ptr + i, *it);
-				i++;
-			}
-			this->clear();
-			this->__alloc.deallocate(this->__ptr, this->__capacity);
+
+			this->~vector();
 			this->__ptr = ptr;
 			this->__capacity = n;
+			this->__size = i;
 		}
 	}
 
@@ -300,7 +296,7 @@ public:
 		if (this->__capacity == 0)
 			this->reserve(1);
 		else if (this->__size == this->__capacity)
-			this->reserve(this->__size * 2);
+			this->reserve(this->__capacity * 2);
 		this->__alloc.construct(&(*(this->end())), val);
 		this->__size++;
 	}
