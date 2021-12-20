@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/17 09:39:57 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/20 10:29:37 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ public:
 
 	// default constructor
 	explicit vector(const allocator_type &alloc = allocator_type()) :
-	__alloc(alloc),
-	__capacity(0),
-	__size(0)
+		__alloc(alloc),
+		__capacity(0),
+		__size(0)
 	{
 		return;
 	}
@@ -111,11 +111,9 @@ public:
 		__capacity(distance(first, last)),
 		__size(distance(first, last))
 	{
-		size_type	i = 0;
-
 		this->__ptr = this->__alloc.allocate(this->__capacity);
-		for (iterator it = first; it != last; it++, i++)
-			this->__alloc.construct(this->__ptr + i, &(*it));
+		for (size_type i = 0; first != last; i++, first++)
+			this->__alloc.construct(this->__ptr + i, *first);
 		return ;
 	}
 	// copy constructor
@@ -134,13 +132,17 @@ public:
 			return ;
 		this->clear();
 		this->__alloc.deallocate(this->__ptr, this->__capacity);
+		return ;
 	}
 	// assignment operator
 	vector		&operator=(const vector &rhs)
 	{
-		this->clear();
-		for (const_iterator it = rhs.begin(); it != rhs.end(); it++)
-			this->push_back(*it);
+		this->~vector();
+		this->__capacity = rhs.capacity();
+		this->__size = rhs.size();
+		this->__ptr = this->__alloc.allocate(this->__capacity);
+		for (difference_type i = 0; i < distance(rhs.begin(), rhs.end()); i++)
+			this->__alloc.construct(this->__ptr + i, *(rhs.begin() + i));
 		return (*this);
 	}
 
