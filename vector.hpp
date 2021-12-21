@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/20 10:39:31 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/21 11:51:02 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,15 @@ public:
 
 	vector_iterator(void) : m_ptr() { return; };
 	vector_iterator(pointer ptr) : m_ptr(ptr) { return; }
+	~vector_iterator(void) { return; }
 
+	vector_iterator		operator=(vector_iterator const &rhs) { this->m_ptr = rhs.m_ptr; return (*this); }
 	reference			operator*(void) { return (*m_ptr); }
 	vector_iterator		operator+(difference_type n) const { return (vector_iterator(m_ptr + n)); }
-	vector_iterator		operator+(vector_iterator n) const { return (vector_iterator(m_ptr + distance(m_ptr, n.m_ptr))); }
 	vector_iterator		&operator++(void) { m_ptr++; return (*this); }
 	vector_iterator		operator++(int) { vector_iterator tmp(*this); m_ptr++; return (tmp); }
 	vector_iterator		&operator+=(difference_type n) { m_ptr += n; return (*this); }
 	vector_iterator		operator-(difference_type n) const { return (vector_iterator(m_ptr - n)); }
-	vector_iterator		operator-(vector_iterator n) const { return (vector_iterator(m_ptr - distance(m_ptr, n.m_ptr))); }
 	vector_iterator		&operator--(void) { m_ptr--; return (*this); }
 	vector_iterator		operator--(int) { vector_iterator tmp(*this); m_ptr--; return (tmp); }
 	vector_iterator		&operator-=(difference_type n) { m_ptr -= n; return (*this); }
@@ -59,8 +59,11 @@ public:
 	bool				operator>=(vector_iterator const &rhs) const { return (m_ptr >= rhs.m_ptr); }
 	bool				operator<(vector_iterator const &rhs) const { return (m_ptr < rhs.m_ptr); }
 	bool				operator<=(vector_iterator const &rhs) const { return (m_ptr <= rhs.m_ptr); }
+
+	pointer			__base__(void) const { return (this->m_ptr); }
 protected:
 	pointer			m_ptr;
+
 };
 template < class T, class Alloc=std::allocator<T> >
 class vector

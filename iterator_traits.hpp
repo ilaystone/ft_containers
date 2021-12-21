@@ -6,12 +6,12 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/13 00:08:27 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/21 09:50:18 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __ITERATORS_HPP__
-#define __ITERATORS_HPP__
+#ifndef __ITERATOR_TRAITS_HPP__
+#define __ITERATOR_TRAITS_HPP__
 
 #include <cstddef>  // For std::ptrdiff_t
 namespace ft

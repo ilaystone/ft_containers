@@ -1,3 +1,8 @@
+## UNDESTANDING TODO
+-[ ] => not implemented
+-[!] => implemented
+-[x] => tested
+
 ##USEFUL TEMPLATES
 
 -[x] iterator_traits
@@ -9,6 +14,35 @@
 -[ ] std::make_pair
 
 ## VECTOR TEMPLATE
+
+-[ ] vector_iterator
+	- [!] default constructor
+	- [!] copy constructor
+	- [!] assign operator
+	- [!] destructor
+	- [!] relational operators
+		- [!] operator==
+		- [!] operator!=
+		- [!] operator<
+		- [!] operator<=
+		- [!] operator>
+		- [!] operator>=
+	- [!] compund assignment operators
+		- [!] operator +=
+		- [!] operator -=
+	- [!] incrementable / decrementable
+		- [!] ++operator
+		- [!] operator++
+		- [!] --operator
+		- [!] operator--
+	- [ ] arithmetic operators
+		- [!] operator+ with numerique value
+		- [ ] operator+ with another iterator
+		- [!] operator- with numerique value
+		- [ ] operator- with another iterator
+	- [!] operator[]
+	- [!] operator*
+	- [!] operator->
 
 -[ ] vector
 	- [x] default constructor
