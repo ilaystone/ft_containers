@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 09:26:35 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/20 08:48:25 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/23 15:40:31 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,10 @@
 
 int main ()
 {
-	TEST_NAME::vector<int>					my_vector(3, 100);
-	TEST_NAME::vector<int>					copy_vec = my_vector;
+	std::vector<int>				myvec(4, 100);
+	std::vector<int>::iterator		it = myvec.begin();
+	std::vector<int>::iterator		ite = myvec.end();
 
-
-	for (TEST_NAME::vector<int>::iterator it = copy_vec.begin(); it != copy_vec.end(); it++)
-		std::cout << ' ' << *it;
-	std::cout << std::endl;
-	std::cout << copy_vec.size() << ' ' << copy_vec.capacity() << std::endl;
+	std::cout << (ite + it) << "\n";
   	return 0;
 }

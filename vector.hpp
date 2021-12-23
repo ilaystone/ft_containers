@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/21 11:51:02 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/23 15:35:01 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,16 @@ public:
 	bool				operator<(vector_iterator const &rhs) const { return (m_ptr < rhs.m_ptr); }
 	bool				operator<=(vector_iterator const &rhs) const { return (m_ptr <= rhs.m_ptr); }
 
+	template < class vector_iterator >
+	vector_iterator			operator+(vector_iterator const &rhs) { return (vector_iterator(m_ptr + rhs.m_ptr)); }
+	template < class vector_iterator >
+	vector_iterator			operator-(vector_iterator const &rhs) { return (vector_iterator(m_ptr - distance(*this, rhs))); }
 	pointer			__base__(void) const { return (this->m_ptr); }
 protected:
 	pointer			m_ptr;
-
 };
+
+
 template < class T, class Alloc=std::allocator<T> >
 class vector
 {
