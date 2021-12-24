@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/21 09:50:18 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/24 17:17:22 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,45 @@ struct __iterator__
     typedef Category  							iterator_category;
 };
 
+
+// __wrap_iterator__
+
+template < class Iterator >
+class __wrap_iterator__ :
+	public __iterator__ <	typename iterator_traits<Iterator>::iterator_category,
+                      		typename iterator_traits<Iterator>::value_type,
+                    		typename iterator_traits<Iterator>::difference_type,
+                    		typename iterator_traits<Iterator>::pointer,
+                       		typename iterator_traits<Iterator>::reference >
+{
+public:
+    typedef Iterator                                            iterator_type;
+    typedef typename iterator_traits<Iterator>::difference_type difference_type;
+    typedef typename iterator_traits<Iterator>::reference       reference;
+    typedef typename iterator_traits<Iterator>::pointer         pointer;
+
+	__wrap_iterator__(void) : __base_ptr__() {}
+	__wrap_iterator__(pointer ptr) : __base_ptr__(ptr) {}
+	__wrap_iterator__(__wrap_iterator__ const &rhs) : __base_ptr__(rhs.__base_ptr__) {}
+	~__wrap_iterator__(void) { return; }
+
+	__wrap_iterator__		operator=(__wrap_iterator__ const &rhs) { this->__base_ptr__ = rhs.__base_ptr__; }
+	reference				operator*(void) { return (*__base_ptr__); }
+	pointer					operator->(void) { return (&(operator*())); }
+	__wrap_iterator__		operator+(difference_type n) const { return (__wrap_iterator__(__base_ptr__ + n)); }
+	__wrap_iterator__		operator-(difference_type n) const { return (__wrap_iterator__(__base_ptr__ - n)); }
+	__wrap_iterator__		operator++(int) { __wrap_iterator__ tmp(*this); __base_ptr__++; return (tmp); }
+	bool					operator==(__wrap_iterator__ const &rhs) const { return (__base_ptr__ == rhs.__base_ptr__); }
+	bool					operator!=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ != rhs.__base_ptr__); }
+	bool					operator>(__wrap_iterator__ const &rhs) const { return (__base_ptr__ > rhs.__base_ptr__); }
+	bool					operator>=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ >= rhs.__base_ptr__); }
+	bool					operator<(__wrap_iterator__ const &rhs) const { return (__base_ptr__ < rhs.__base_ptr__); }
+	bool					operator<=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ <= rhs.__base_ptr__); }
+protected:
+	pointer			__base_ptr__;
+};
+// end of __wrap_iterator__
+// reverse_iterator
 template < class Iterator >
 class reverse_iterator
     : public __iterator__<	typename iterator_traits<Iterator>::iterator_category,
@@ -138,7 +177,7 @@ bool	operator>=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<It
 {
     return (lhs.base() >= rhs.base());
 }
-
+// end of reveser Iterator
 template < class InputIterator >
 typename ft::iterator_traits<InputIterator>::difference_type		distance(InputIterator first, InputIterator last)
 {
