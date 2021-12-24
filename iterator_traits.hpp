@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/24 17:17:22 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/24 18:45:22 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,13 @@ public:
 	__wrap_iterator__(__wrap_iterator__ const &rhs) : __base_ptr__(rhs.__base_ptr__) {}
 	~__wrap_iterator__(void) { return; }
 
-	__wrap_iterator__		operator=(__wrap_iterator__ const &rhs) { this->__base_ptr__ = rhs.__base_ptr__; }
+	__wrap_iterator__		operator=(__wrap_iterator__ const &rhs) { this->__base_ptr__ = rhs.__base_ptr__; return (*this); }
 	reference				operator*(void) { return (*__base_ptr__); }
 	pointer					operator->(void) { return (&(operator*())); }
 	__wrap_iterator__		operator+(difference_type n) const { return (__wrap_iterator__(__base_ptr__ + n)); }
 	__wrap_iterator__		operator-(difference_type n) const { return (__wrap_iterator__(__base_ptr__ - n)); }
 	__wrap_iterator__		operator++(int) { __wrap_iterator__ tmp(*this); __base_ptr__++; return (tmp); }
+	__wrap_iterator__		&operator++(void) { __base_ptr__++; return (*this); }
 	bool					operator==(__wrap_iterator__ const &rhs) const { return (__base_ptr__ == rhs.__base_ptr__); }
 	bool					operator!=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ != rhs.__base_ptr__); }
 	bool					operator>(__wrap_iterator__ const &rhs) const { return (__base_ptr__ > rhs.__base_ptr__); }

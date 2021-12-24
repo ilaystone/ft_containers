@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/23 15:35:01 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/24 17:14:44 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ public:
 	typedef typename allocator_type::const_reference	const_reference;
 	typedef typename allocator_type::pointer			pointer;
 	typedef typename allocator_type::const_pointer		const_pointer;
-	typedef ft::vector_iterator<T>						iterator;
-	typedef ft::vector_iterator<const T>				const_iterator;
+	typedef ft::__wrap_iterator__<pointer>				iterator;
+	typedef ft::__wrap_iterator__<const_pointer>		const_iterator;
 	typedef ft::reverse_iterator<iterator>          	reverse_iterator;
     typedef ft::reverse_iterator<const_iterator>    	const_reverse_iterator;
 	typedef typename allocator_type::size_type       	size_type;
@@ -162,19 +162,19 @@ public:
 
 	iterator				begin(void)
 	{
-		return (vector_iterator<value_type>(__ptr));
+		return (__wrap_iterator__<pointer>(__ptr));
 	}
 	const_iterator			begin() const
 	{
-		return (vector_iterator<const value_type>(__ptr));
+		return (__wrap_iterator__<const_pointer>(__ptr));
 	}
 	iterator				end(void)
 	{
-		return (vector_iterator<value_type>(__ptr + __size));
+		return (__wrap_iterator__<pointer>(__ptr + __size));
 	}
 	const_iterator			end(void) const
 	{
-		return (vector_iterator<const value_type>(__ptr + __size));
+		return (__wrap_iterator__<const_pointer>(__ptr + __size));
 	}
 	reverse_iterator		rbegin(void)
 	{
