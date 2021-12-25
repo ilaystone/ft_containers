@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/25 15:19:37 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/25 15:30:51 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,23 +76,26 @@ class __wrap_iterator__ :
                        		typename iterator_traits<Iterator>::reference >
 {
 public:
-    typedef Iterator                                            iterator_type;
-    typedef typename iterator_traits<Iterator>::difference_type difference_type;
-    typedef typename iterator_traits<Iterator>::reference       reference;
-    typedef typename iterator_traits<Iterator>::pointer         pointer;
+    typedef Iterator                                           			iterator_type;
+	typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
+	typedef typename iterator_traits<iterator_type>::value_type			value_type;
+    typedef typename iterator_traits<iterator_type>::difference_type 	difference_type;
+    typedef typename iterator_traits<iterator_type>::reference       	reference;
+    typedef typename iterator_traits<iterator_type>::pointer         	pointer;
 
 	__wrap_iterator__(void) : __base_ptr__() {}
 	__wrap_iterator__(pointer ptr) : __base_ptr__(ptr) {}
-	__wrap_iterator__(__wrap_iterator__ const &rhs) : __base_ptr__(rhs.__base_ptr__) {}
+	__wrap_iterator__(__wrap_iterator__ const &rhs) : __base_ptr__(rhs.base()) {}
 	~__wrap_iterator__(void) { return; }
 
-	__wrap_iterator__		operator=(__wrap_iterator__ const &rhs) { this->__base_ptr__ = rhs.__base_ptr__; return (*this); }
+	__wrap_iterator__		operator=(__wrap_iterator__ const &rhs) { __base_ptr__ = rhs.base(); return (*this); }
+
 	reference				operator*(void) { return (*__base_ptr__); }
-	pointer					operator->(void) { return (&(operator*())); }
+	pointer					operator->(void) { return (&(*__base_ptr__)); }
+	__wrap_iterator__		&operator++(void) { ++__base_ptr__; return (*this); }
+	__wrap_iterator__		operator++(int) { __wrap_iterator__ tmp(*this); ++(*this); return (tmp); }
 	__wrap_iterator__		operator+(difference_type n) const { return (__wrap_iterator__(__base_ptr__ + n)); }
 	__wrap_iterator__		operator-(difference_type n) const { return (__wrap_iterator__(__base_ptr__ - n)); }
-	__wrap_iterator__		operator++(int) { __wrap_iterator__ tmp(*this); __base_ptr__++; return (tmp); }
-	__wrap_iterator__		&operator++(void) { __base_ptr__++; return (*this); }
 	bool					operator==(__wrap_iterator__ const &rhs) const { return (__base_ptr__ == rhs.__base_ptr__); }
 	bool					operator!=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ != rhs.__base_ptr__); }
 	bool					operator>(__wrap_iterator__ const &rhs) const { return (__base_ptr__ > rhs.__base_ptr__); }
