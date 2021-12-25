@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/30 16:43:18 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/24 18:45:22 by ikhadem          ###   ########.fr       */
+/*   Updated: 2021/12/25 15:19:37 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,24 @@ public:
 	bool					operator>=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ >= rhs.__base_ptr__); }
 	bool					operator<(__wrap_iterator__ const &rhs) const { return (__base_ptr__ < rhs.__base_ptr__); }
 	bool					operator<=(__wrap_iterator__ const &rhs) const { return (__base_ptr__ <= rhs.__base_ptr__); }
+
+	pointer					base(void) const { return (__base_ptr__); }
+
+	template < class Iter1, class Iter2 >
+	friend
+	typename __wrap_iterator__<Iter1>::diffrence_type
+	operator-(const __wrap_iterator__<Iter1> &, __wrap_iterator__<Iter2> &);
 protected:
 	pointer			__base_ptr__;
 };
+
+template < class Iter1, class Iter2 >
+typename __wrap_iterator__<Iter1>::difference_type
+operator-(const __wrap_iterator__<Iter1> &x, __wrap_iterator__<Iter2> &y)
+{
+	return (x.base() - y.base());
+}
+
 // end of __wrap_iterator__
 // reverse_iterator
 template < class Iterator >
