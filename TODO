@@ -18,6 +18,7 @@
 -[ ] vector_iterator
 	- [!] default constructor
 	- [!] copy constructor
+	- [!] normal iterator to const constructor;
 	- [!] assign operator
 	- [!] destructor
 	- [!] relational operators
