@@ -38,20 +38,18 @@ namespace ft
 		size_type			__size;
 	public:
 		// * construct / copy / destroy
-		// * assign(), get_alloc() and operator= are also listed in this section
+		// * operator= is also listed in this section
 
 		/**
 		 * @brief Construct a new vector object
 		 *
 		 * @param alloc Allocator used in the underlying level
 		 */
-		explicit vector(const allocator_type &alloc = allocator_type()) :
-			__alloc(alloc),
+		explicit vector(const allocator_type &alloc = allocator_type())
+		:	__alloc(alloc),
 			__capacity(0),
 			__size(0)
-		{
-			return;
-		}
+		{ }
 		/**
 		 * @brief Construct a new vector object
 		 *
@@ -59,15 +57,14 @@ namespace ft
 		 * @param val value of the objects to construct
 		 * @param alloc
 		 */
-		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) :
-			__alloc(alloc),
+		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
+		:	__alloc(alloc),
 			__capacity(n),
 			__size(n)
 		{
 			this->__ptr = this->__alloc.allocate(this->__capacity);
 			for (size_type i = 0; i < this->__size; i++)
 				this->__alloc.construct(this->__ptr + i, val);
-			return ;
 		}
 		/**
 		 * @brief Construct a new vector object from a range of Iterators
@@ -79,29 +76,25 @@ namespace ft
 		 */
 		template < class InputIterator >
 		vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
-			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0) :
-			__alloc(alloc),
-			__capacity(distance(first, last)),
-			__size(distance(first, last))
+			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
+			:	__alloc(alloc),
+				__capacity(distance(first, last)),
+				__size(distance(first, last))
 		{
 			this->__ptr = this->__alloc.allocate(this->__capacity);
 			for (size_type i = 0; first != last; i++, first++)
 				this->__alloc.construct(this->__ptr + i, *first);
-			return ;
 		}
 		/**
 		 * @brief Construct a new vector object from a another vector object
 		 * 
 		 * @param rhs reference to a vector
 		 */
-		vector(const vector &rhs) :
-			__alloc(rhs.__alloc),
+		vector(const vector &rhs)
+		:	__alloc(rhs.__alloc),
 			__capacity(0),
 			__size(0)
-		{
-			*this = rhs;
-			return ;
-		}
+		{ *this = rhs; }
 		/**
 		 * @brief Destroy the vector object
 		 * 
@@ -112,7 +105,6 @@ namespace ft
 				return ;
 			this->clear();
 			this->__alloc.deallocate(this->__ptr, this->__capacity);
-			return ;
 		}
 		/**
 		 * @brief overload of the assignment operator destroys current objects and copies the
@@ -123,60 +115,108 @@ namespace ft
 		 */
 		vector		&operator=(const vector &rhs)
 		{
-			this->~vector();
-			this->__capacity = rhs.capacity();
-			this->__size = rhs.size();
-			this->__ptr = this->__alloc.allocate(this->__capacity);
-			for (difference_type i = 0; i < distance(rhs.begin(), rhs.end()); i++)
-				this->__alloc.construct(this->__ptr + i, *(rhs.begin() + i));
+			if (this != &rhs)
+			{
+				this->clear();
+				if (rhs.capacity() != 0)
+					this->assign(rhs.begin(), rhs.end());
+			}
 			return (*this);
 		}
 
-		/**************
-		** Iterators **
-		**************/
-
+		// * Iterators
+		/**
+		 * @brief Returns a read/write iterator that points to the first element in this vector
+		 * 
+		 * @return iterator 
+		 */
 		iterator				begin(void)
 		{
 			return (__wrap_iterator<pointer>(__ptr));
 		}
+		/**
+		 * @brief Returns a read-only iterator that points to the first element in this vector
+		 * 
+		 * @return const_iterator 
+		 */
 		const_iterator			begin() const
 		{
 			return (__wrap_iterator<const_pointer>(__ptr));
 		}
+		/**
+		 * @brief Returns a read/write iterator that points one past the last element in this vector
+		 * 
+		 * @return iterator 
+		 */
 		iterator				end(void)
 		{
 			return (__wrap_iterator<pointer>(__ptr + __size));
 		}
+		/**
+		 * @brief Retruns a read-only iterator that points one past the last element in this vector
+		 * 
+		 * @return const_iterator 
+		 */
 		const_iterator			end(void) const
 		{
 			return (__wrap_iterator<const_pointer>(__ptr + __size));
 		}
+		/**
+		 * @brief Returns a read/write reverse iterator that points to the last element in this vector
+		 * iteration is done in the reverse order
+		 * 
+		 * @return reverse_iterator 
+		 */
 		reverse_iterator		rbegin(void)
 		{
 			return (reverse_iterator(end()));
 		}
+		/**
+		 * @brief Returns a read-only reverse iterator that points to the last element in this vector
+		 * iteration is done in the reverse order
+		 * 
+		 * @return reverse_iterator 
+		 */
 		const_reverse_iterator	rbegin(void) const
 		{
 			return (reverse_iterator(end()));
 		}
+		/**
+		 * @brief Returns a read/write reverse iterator that points to the first element in this vector
+		 * iteration is done in the reverse order
+		 * 
+		 * @return reverse_iterator 
+		 */
 		reverse_iterator		rend(void)
 		{
 			return (reverse_iterator(begin()));
 		}
+		/**
+		 * @brief Returns a read-only reverse iterator that points to the first element in this vector
+		 * iteration is done in the reverse order
+		 * 
+		 * @return reverse_iterator 
+		 */
 		const_reverse_iterator	rend(void) const
 		{
 			return (reverse_iterator(begin()));
 		}
 
-		/*************
-		** Capacity **
-		*************/
-
+		// Capacity
+		/**
+		 * @brief returns number of elements in this vector
+		 * 
+		 * @return size_type 
+		 */
 		size_type				size(void) const
 		{
 			return (this->__size);
 		}
+		/**
+		 * @brief Returns the size() of the largest possible vector
+		 * 
+		 * @return size_type 
+		 */
 		size_type				max_size(void) const
 		{
 			return (std::min<size_type>(std::numeric_limits<difference_type>::max(), this->__alloc.max_size()));
@@ -268,16 +308,21 @@ namespace ft
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
 		{
 			this->clear();
-			for (iterator it = first; it != last; it++)
-				this->push_back(*it);
-			return ;
+			difference_type			dist = distance(first, last);
+			if (dist > this->__capacity)
+				this->reserve(dist);
+			for (difference_type i = 0; i < dist; i++)
+				this->__alloc.construct(this->__ptr + i, *first++);
+			this->__size = dist;
 		}
 		void 					assign (size_type n, const value_type& val)
 		{
 			this->clear();
-			for (; n != 0; n--)
-				this->push_back(val);
-			return ;
+			if (n > this->__capacity)
+				this->reserve(n);
+			for (difference_type i = 0; i < n; i++)
+				this->__alloc.construct(this->__ptr + i, val);
+			this->__size = n;
 		}
 		void					push_back(value_type const	&val)
 		{
@@ -355,8 +400,8 @@ namespace ft
 		// }
 		void					clear(void)
 		{
-			for (iterator it = this->begin(); it != this->end(); it++)
-				this->__alloc.destroy(&(*it));
+			for (difference_type i = 0; i < distance(begin(), end()); i++)
+				this->__alloc.destroy(this->__ptr + i);
 			this->__size = 0;
 			return ;
 		}
