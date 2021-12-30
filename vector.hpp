@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   vector.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/25 07:49:21 by ikhadem           #+#    #+#             */
-/*   Updated: 2021/12/29 13:21:33 by ikhadem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -30,9 +18,6 @@ namespace ft
 	class vector
 	{
 	public:
-		/*****************
-		** Member types **
-		*****************/
 		typedef T											value_type;
 		typedef Alloc										allocator_type;
 		typedef typename allocator_type::reference			reference;
@@ -40,17 +25,26 @@ namespace ft
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
 		typedef ft::__wrap_iterator<pointer>				iterator;
-		typedef ft::__wrap_iterator<const_pointer>		const_iterator;
+		typedef ft::__wrap_iterator<const_pointer>			const_iterator;
 		typedef ft::reverse_iterator<iterator>          	reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>    	const_reverse_iterator;
 		typedef typename allocator_type::size_type       	size_type;
 		typedef typename allocator_type::difference_type 	difference_type;
 
-		/*********************
-		** Member functions **
-		*********************/
+	protected:
+		allocator_type		__alloc;
+		pointer				__ptr;
+		size_type			__capacity;
+		size_type			__size;
+	public:
+		// * construct / copy / destroy
+		// * assign(), get_alloc() and operator= are also listed in this section
 
-		// default constructor
+		/**
+		 * @brief Construct a new vector object
+		 *
+		 * @param alloc Allocator used in the underlying level
+		 */
 		explicit vector(const allocator_type &alloc = allocator_type()) :
 			__alloc(alloc),
 			__capacity(0),
@@ -58,7 +52,13 @@ namespace ft
 		{
 			return;
 		}
-		// fill constructor
+		/**
+		 * @brief Construct a new vector object
+		 *
+		 * @param n number of objects of Type T to be constructed
+		 * @param val value of the objects to construct
+		 * @param alloc
+		 */
 		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) :
 			__alloc(alloc),
 			__capacity(n),
@@ -69,7 +69,14 @@ namespace ft
 				this->__alloc.construct(this->__ptr + i, val);
 			return ;
 		}
-		// range constructor
+		/**
+		 * @brief Construct a new vector object from a range of Iterators
+		 * 
+		 * @tparam InputIterator Input iterator to extract values from
+		 * @param first start of range
+		 * @param last end of range
+		 * @param alloc
+		 */
 		template < class InputIterator >
 		vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0) :
@@ -82,7 +89,11 @@ namespace ft
 				this->__alloc.construct(this->__ptr + i, *first);
 			return ;
 		}
-		// copy constructor
+		/**
+		 * @brief Construct a new vector object from a another vector object
+		 * 
+		 * @param rhs reference to a vector
+		 */
 		vector(const vector &rhs) :
 			__alloc(rhs.__alloc),
 			__capacity(0),
@@ -91,7 +102,10 @@ namespace ft
 			*this = rhs;
 			return ;
 		}
-		// destructor
+		/**
+		 * @brief Destroy the vector object
+		 * 
+		 */
 		~vector(void)
 		{
 			if (this->__capacity == 0)
@@ -100,7 +114,13 @@ namespace ft
 			this->__alloc.deallocate(this->__ptr, this->__capacity);
 			return ;
 		}
-		// assignment operator
+		/**
+		 * @brief overload of the assignment operator destroys current objects and copies the
+		 * information from the reference object
+		 * 
+		 * @param rhs reference to a vector
+		 * @return vector& 
+		 */
 		vector		&operator=(const vector &rhs)
 		{
 			this->~vector();
@@ -345,12 +365,6 @@ namespace ft
 		{
 			return (allocator_type(this->__alloc));
 		}
-
-	protected:
-		allocator_type		__alloc;
-		pointer				__ptr;
-		size_type			__capacity;
-		size_type			__size;
 
 	};
 

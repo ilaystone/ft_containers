@@ -1,12 +1,4 @@
-#include <vector>
-#include <iostream>
-#include <utility>
-#include <string>
-#include "vector.hpp"
-
-#ifndef TEST_NAME
-# define TEST_NAME ft
-#endif
+#include "common_test_template.hpp"
 
 int main ()
 {
