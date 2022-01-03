@@ -24,7 +24,7 @@ int main ()
 	std::cout << std::boolalpha << (it != myvec.end()) << std::endl;
 	std::cout << "Biderectional iterator requirement :" << std::endl;
 	it = myvec.begin();
-	TEST_NAME::vector<int>::const_iterator 	ite(it);
+	TEST_NAME::vector<int>::const_iterator 	ite(it); // 
 	std::cout << *it << std::endl;
 	it++;
 	std::cout << *it-- << std::endl;

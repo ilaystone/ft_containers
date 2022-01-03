@@ -155,13 +155,13 @@ namespace ft
 	operator+(typename __wrap_iterator<Iter>::difference_type n, const __wrap_iterator<Iter> &rhs)
 	{ return (__wrap_iterator<Iter>(rhs.base() + n)); }
 
-	// end of __wrap_iterator
-
-
-
-
-
 	// reverse_iterator
+	/**
+	 * @brief Bidirectional and random access Iterators have corresponding reverse iterator adapters that iterate
+	 * through the data structor in the oposite direction, they have the same signature as rhe corresponsing iterators.
+	 * 
+	 * @tparam Iterator 
+	 */
 	template < class Iterator >
 	class reverse_iterator
 		: public __iterator__<	typename iterator_traits<Iterator>::iterator_category,
@@ -170,11 +170,15 @@ namespace ft
 								typename iterator_traits<Iterator>::pointer,
 								typename iterator_traits<Iterator>::reference >
 	{
+	protected:
+		Iterator	    								current;
+
+		typedef iterator_traits<Iterator>				__traits_type;
 	public:
-		typedef Iterator                                            iterator_type;
-		typedef typename iterator_traits<Iterator>::difference_type difference_type;
-		typedef typename iterator_traits<Iterator>::reference       reference;
-		typedef typename iterator_traits<Iterator>::pointer         pointer;
+		typedef Iterator                                iterator_type;
+		typedef typename __traits_type::difference_type difference_type;
+		typedef typename __traits_type::reference       reference;
+		typedef typename __traits_type::pointer         pointer;
 
 		reverse_iterator(void) : current() { return; }
 		reverse_iterator(Iterator const &iter) : current(iter) { return; }
@@ -197,8 +201,6 @@ namespace ft
 		reverse_iterator				&operator-=(difference_type n) {current += n; return (*this); }
 		pointer							operator->(void) const { return (&(operator*())); }
 		reference						operator[](difference_type n) { return (*(*this + n)); }
-	protected:
-		iterator_type    current;
 	};
 
 	template < class Iterator >
