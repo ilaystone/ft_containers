@@ -221,6 +221,12 @@ namespace ft
 		{
 			return (std::min<size_type>(std::numeric_limits<difference_type>::max(), this->__alloc.max_size()));
 		}
+		/**
+		 * @brief resizes the vector to the new elements if it was bigger it inserts new elements with @val otherwise it shrinks the vector
+		 * 
+		 * @param n new size of vector
+		 * @param val values of new elements if they were added
+		 */
 		void					resize(size_type n, value_type val = value_type())
 		{
 			if (n > this->__capacity)
@@ -231,14 +237,30 @@ namespace ft
 				this->push_back(val);
 			return ;
 		}
+		/**
+		 * @brief returns the total number of elements the vector can hold befor the need to reallcate memory
+		 * 
+		 * @return size_type 
+		 */
 		size_type				capacity(void) const
 		{
 			return (this->__capacity);
 		}
+		/**
+		 * @brief returns true if vector is empty (if begin == end)
+		 * 
+		 * @return true 
+		 * @return false 
+		 */
 		bool					empty(void) const
 		{
 			return (__size == 0);
 		}
+		/**
+		 * @brief attempts to reallocate enough memory to hold @n number of elements if n is bigger than actual capacity
+		 * 
+		 * @param n number requested
+		 */
 		void					reserve(size_type n)
 		{
 			if (n > this->__capacity)
@@ -258,51 +280,91 @@ namespace ft
 			}
 		}
 
-		/*******************
-		** Element access **
-		*******************/
-
+		// * Element Access
+		/**
+		 * @brief read/write access to data in vector in array-style
+		 * 
+		 * @param n position of the element to access
+		 * @return reference 
+		 */
 		reference				operator[](size_type n)
 		{
 			return (*(this->begin() + n));
 		}
+		/**
+		 * @brief read-only access to data in the vector in an array-style
+		 * 
+		 * @param n position of the element to access
+		 * @return const_reference 
+		 */
 		const_reference			operator[](size_type n) const
 		{
 			return (*(this->begin() + n));
 		}
+		/**
+		 * @brief read/write access to data in vector
+		 * 
+		 * @param n index of data to access
+		 * @throw std::out_of_range if @n passed is invalid
+		 * @return reference 
+		 */
 		reference				at(size_type n)
 		{
 			if (n < 0 || n > this->__size)
-				throw (std::out_of_range("ft::vector"));
+				throw (std::out_of_range("vector"));
 			return (operator[](n));
 		}
+		/**
+		 * @brief read-only access to data in vector
+		 * 
+		 * @param n index of data to access
+		 * @throw std::out_of_range if @n passed is invalid
+		 * @return reference 
+		 */
 		const_reference			at(size_type n) const
 		{
 			if (n < 0 || n > this->__size)
-				throw std::out_of_range("ft::vector");
-			return (operator[](n));
+				throw std::out_of_range("vector");
+			return (*operator[](n));
 		}
+		/**
+		 * @brief a read/write reference to the first element in the vector
+		 * 
+		 * @return reference 
+		 */
 		reference				front(void)
 		{
-			return (operator[](0));
+			return (*begin());
 		}
+		/**
+		 * @brief a read-only reference to the first element in the vector
+		 * 
+		 * @return const_reference 
+		 */
 		const_reference			front(void) const
 		{
-			return (operator[](0));
+			return (*begin());
 		}
+		/**
+		 * @brief a read/write reference to the last element in the vector
+		 * 
+		 * @return reference 
+		 */
 		reference				back(void)
 		{
-			return (operator[](this->__size - 1));
+			return (*(end() - 1));
 		}
+		/**
+		 * @brief a read-only reference to the last element in the vector
+		 * 
+		 * @return const_reference 
+		 */
 		const_reference			back(void) const
 		{
-			return (operator[](this->__size - 1));
+			return (*(end() - 1));
 		}
 
-		/**************
-		** Modifiers **
-		**************/
-
+		// * mofifiers
 		template < class InputIterator >
 		void					assign(InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)

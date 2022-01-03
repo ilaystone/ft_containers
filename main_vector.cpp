@@ -55,4 +55,40 @@ int		main(void)
 	printSize(myvec);
 	myvec.resize(65);
 	printSize(myvec);
+	std::cout << std::boolalpha << myvec.empty() << std::endl;
+	myvec.clear();
+	std::cout << std::boolalpha << myvec.empty() << std::endl;
+	printSize(myvec);
+	myvec.reserve(100);
+	printSize(myvec);
+	myvec.reserve(150);
+	printSize(myvec);
+	try
+	{
+		myvec.reserve(myvec.max_size() + 1);
+	}
+	catch (std::exception const &e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+	myvec.clear();
+	for (int c = 0; c < 50; c++)
+		myvec.push_back(c + 1);
+	std::cout << "Element Access: \n" << std::endl;
+	std ::cout << myvec[17] << std::endl;
+	std::cout << myvec.at(17) << std::endl;
+	try
+	{
+		myvec.at(88);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	std::cout << myvec.front() << std::endl;
+	std::cout << myvec.back() << std::endl;
+	myvec.front() = 115;
+	std::cout << myvec.front() << std::endl;
+	std::cout << "modifiers: \n" << std::endl;
+	
 }
