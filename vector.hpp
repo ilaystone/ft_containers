@@ -365,6 +365,13 @@ namespace ft
 		}
 
 		// * mofifiers
+		/**
+		 * @brief fills the vector with elements from the range of @InputIterator
+		 * 
+		 * @tparam InputIterator 
+		 * @param first start of range
+		 * @param last end of range
+		 */
 		template < class InputIterator >
 		void					assign(InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
@@ -377,6 +384,13 @@ namespace ft
 				this->__alloc.construct(this->__ptr + i, *first++);
 			this->__size = dist;
 		}
+		/**
+		 * @brief fills the vector with @n copies of the given @val
+		 * changing it's content accordingly
+		 * 
+		 * @param n number of elements to assign
+		 * @param val value of elements to insert
+		 */
 		void 					assign (size_type n, const value_type& val)
 		{
 			this->clear();
@@ -386,6 +400,12 @@ namespace ft
 				this->__alloc.construct(this->__ptr + i, val);
 			this->__size = n;
 		}
+		/**
+		 * @brief typical stack operation, add the givven element at the end of vector
+		 * rellocating the vector if such operation is needded
+		 * 
+		 * @param val value to insert
+		 */
 		void					push_back(value_type const	&val)
 		{
 			if (this->__capacity == 0)
@@ -395,6 +415,10 @@ namespace ft
 			this->__alloc.construct(&(*(this->end())), val);
 			this->__size++;
 		}
+		/**
+		 * @brief deletes the last element inserted in the vector reducing the size by one
+		 * 
+		 */
 		void					pop_back(void)
 		{
 			if (this->__size <= 0)
@@ -402,6 +426,13 @@ namespace ft
 			this->__size--;
 			this->__alloc.destroy(&(*this->end()));
 		}
+		/**
+		 * @brief insert an object befor the specified @position
+		 * 
+		 * @param position pos to insert in
+		 * @param val value to construct object with
+		 * @return iterator 
+		 */
 		iterator				insert(iterator position, const value_type &val)
 		{
 			difference_type			dist = distance(this->begin(), position);
@@ -409,6 +440,13 @@ namespace ft
 			this->insert(position, 1, val);
 			return (iterator(&this->__ptr[dist]));
 		}
+		/**
+		 * @brief insert @n objects starting at specified @postion
+		 * 
+		 * @param position postion to insert in
+		 * @param n number of objects to insert
+		 * @param val value of objects
+		 */
 		void					insert(iterator position, size_type n, const value_type &val)
 		{
 			difference_type			dist = distance(this->begin(), position);
@@ -431,6 +469,14 @@ namespace ft
 				this->__alloc.construct(&(*new_pos++), val);
 			this->__size += n;
 		}
+		/**
+		 * @brief insert a range of objects starting from @first until @last
+		 * 
+		 * @tparam InputIterator 
+		 * @param position postion to start inserting in
+		 * @param first first @InputIterator
+		 * @param last end of range of @InputIterator
+		 */
 		template < class InputIterator >
 		void					insert(iterator position, InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
@@ -456,10 +502,27 @@ namespace ft
 				this->__alloc.construct(&(*new_pos++), *first++);
 			this->__size += n;
 		}
-		// iterator				erase(iterator position)
-		// {
-			
-		// }
+		iterator				erase(iterator position)
+		{
+			return (erase(position, position + 1));
+		}
+		iterator				erase(iterator first, iterator last)
+		{
+			difference_type		dist = distance(this->begin(), first);
+
+			if (last < end())
+			{
+				this->__move_elements_to_left(first, last);
+				this->__size -= static_cast<size_type>(last - first);
+			}
+			else
+			{
+				size_type	new_size = this->__size - static_cast<size_type>(last - first);
+				while (this->__size != new_size)
+					this->pop_back();
+			}
+			return (iterator(&this->__ptr[dist]));
+		}
 		void					clear(void)
 		{
 			for (difference_type i = 0; i < distance(begin(), end()); i++)
@@ -472,7 +535,16 @@ namespace ft
 		{
 			return (allocator_type(this->__alloc));
 		}
-
+	protected:
+		void	__move_elements_to_left(iterator first, iterator last)
+		{
+			for (; first != this->end(); first++, last++)
+			{
+				this->__alloc.destroy(&(*first));
+				if (last < end())
+					this->__alloc.construct(&(*first), *last);
+			}
+		}
 	};
 
 }

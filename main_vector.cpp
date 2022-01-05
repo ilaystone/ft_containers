@@ -90,5 +90,57 @@ int		main(void)
 	myvec.front() = 115;
 	std::cout << myvec.front() << std::endl;
 	std::cout << "modifiers: \n" << std::endl;
-	
+	std::cout << "assign :\n" << std::endl;
+	TEST_NAME::vector<TEST_TYPE> first;
+	TEST_NAME::vector<TEST_TYPE> second;
+	TEST_NAME::vector<TEST_TYPE> third;
+
+	first.assign (7,100);             // 7 ints with a value of 100
+
+	TEST_NAME::vector<TEST_TYPE>::iterator it = first.begin() + 1;
+
+	second.assign(it,first.end() - 1); // the 5 central values of first
+
+	int myints[] = {1776, 7, 4};
+	third.assign (myints, myints + 3);   // assigning from array.
+
+	std::cout << "Size of first: " << int (first.size()) << '\n';
+	std::cout << "Size of second: " << int (second.size()) << '\n';
+	std::cout << "Size of third: " << int (third.size()) << '\n';
+	first.clear();
+	for (int i = 0; i < 50; i++)
+		first.push_back(i * 10 + 5);
+	printSize(first);
+	for (int i = 0; i < 50; i++)
+		first.pop_back();
+	printSize(first);
+	int		sum(0);
+	first.push_back(100);
+	first.push_back(200);
+	first.push_back(300);
+	while (!first.empty())
+	{
+		sum += first.back();
+		first.pop_back();
+	}
+	std::cout << "The elements of myvector add up to " << sum << '\n';
+	first.clear();
+	second.clear();
+	first = TEST_NAME::vector<TEST_TYPE>(3, 100);
+	it = first.begin();
+	it = first.insert(it, 200);
+	first.insert(it + 2, 300);
+	it = first.begin();
+	second = TEST_NAME::vector<TEST_TYPE>(2, 400);
+	first.insert(it + 2, second.begin(), second.end());
+
+	int		arr[] = { 501, 502, 503 };
+	first.insert(first.begin(), arr, arr + 3);
+	printSize(first);
+	first = TEST_NAME::vector<TEST_TYPE>();
+	for (int i = 1; i <= 10; i++)	first.push_back(i);
+	first.erase(first.begin() + 5);
+	first.erase(first.begin(), first.begin() + 3);
+	printSize(first);
+	return 0;
 }
