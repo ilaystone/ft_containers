@@ -6,6 +6,7 @@
 #include "iterator_traits.hpp"
 #include "iterator.hpp"
 #include "type_traits.hpp"
+#include "pair.hpp"
 #include <algorithm>
 #include <memory>
 #include <limits>
@@ -18,6 +19,7 @@ namespace ft
 	class vector
 	{
 	public:
+		// * Aliases
 		typedef T											value_type;
 		typedef Alloc										allocator_type;
 		typedef typename allocator_type::reference			reference;
@@ -32,26 +34,27 @@ namespace ft
 		typedef typename allocator_type::difference_type 	difference_type;
 
 	protected:
+		// * Member attributes
 		allocator_type		__alloc;
 		pointer				__ptr;
 		size_type			__capacity;
 		size_type			__size;
 	public:
-		// * construct / copy / destroy
-		// * operator= is also listed in this section
-
+		// * Coplien form
 		/**
 		 * @brief Construct a new vector object
 		 *
-		 * @param alloc Allocator used in the underlying level
+		 * @param alloc Allocator used to allocate stuff
 		 */
 		explicit vector(const allocator_type &alloc = allocator_type())
 		:	__alloc(alloc),
 			__capacity(0),
 			__size(0)
-		{ }
+		{
+			__ptr = __alloc.allocate(__capacity);
+		}
 		/**
-		 * @brief Construct a new vector object
+		 * @brief Construct a new vector object with @n number of elements initialzed to @val
 		 *
 		 * @param n number of objects of Type T to be constructed
 		 * @param val value of the objects to construct
@@ -62,9 +65,9 @@ namespace ft
 			__capacity(n),
 			__size(n)
 		{
-			this->__ptr = this->__alloc.allocate(this->__capacity);
-			for (size_type i = 0; i < this->__size; i++)
-				this->__alloc.construct(this->__ptr + i, val);
+			__ptr = __alloc.allocate(__capacity);
+			for (size_type i = 0; i < __size; i++)
+				__alloc.construct(__ptr + i, val);
 		}
 		/**
 		 * @brief Construct a new vector object from a range of Iterators
@@ -81,9 +84,9 @@ namespace ft
 				__capacity(distance(first, last)),
 				__size(distance(first, last))
 		{
-			this->__ptr = this->__alloc.allocate(this->__capacity);
+			__ptr = this->__alloc.allocate(__capacity);
 			for (size_type i = 0; first != last; i++, first++)
-				this->__alloc.construct(this->__ptr + i, *first);
+				__alloc.construct(__ptr + i, *first);
 		}
 		/**
 		 * @brief Construct a new vector object from a another vector object
@@ -92,17 +95,19 @@ namespace ft
 		 */
 		vector(const vector &rhs)
 		:	__alloc(rhs.__alloc),
-			__capacity(0),
-			__size(0)
-		{ *this = rhs; }
+			__capacity(rhs.capacity()),
+			__size(rhs.size())
+		{
+			__ptr = this->__alloc.allocate(__capacity);
+			for (ft::pair<size_type, const_iterator> i(0, rhs.begin()); i.second != rhs.end(); i.first++, i.second++)
+				__alloc.construct(__ptr + i.first, *i.second);
+		}
 		/**
 		 * @brief Destroy the vector object
 		 * 
 		 */
 		~vector(void)
 		{
-			if (this->__capacity == 0)
-				return ;
 			this->clear();
 			this->__alloc.deallocate(this->__ptr, this->__capacity);
 		}
@@ -115,12 +120,8 @@ namespace ft
 		 */
 		vector		&operator=(const vector &rhs)
 		{
-			if (this != &rhs)
-			{
-				this->clear();
-				if (rhs.capacity() != 0)
-					this->assign(rhs.begin(), rhs.end());
-			}
+			vector	tmp(rhs),
+			swap(tmp);
 			return (*this);
 		}
 
@@ -474,7 +475,7 @@ namespace ft
 		 * 
 		 * @tparam InputIterator 
 		 * @param position postion to start inserting in
-		 * @param first first @InputIterator
+		 * @param first start of range @InputIterator
 		 * @param last end of range of @InputIterator
 		 */
 		template < class InputIterator >
@@ -523,19 +524,25 @@ namespace ft
 			}
 			return (iterator(&this->__ptr[dist]));
 		}
+		void	swap(vector &rhs)
+		{
+			swap(__alloc, rhs.__alloc);
+			swap(__ptr, rhs.__ptr);
+			swap(__size, rhs.__size);
+			swap(__capacity, rhs.__capacity);
+		}
 		void					clear(void)
 		{
 			for (difference_type i = 0; i < distance(begin(), end()); i++)
 				this->__alloc.destroy(this->__ptr + i);
 			this->__size = 0;
-			return ;
 		}
 		// return a copy of __alloc
 		allocator_type get_allocator() const
 		{
 			return (allocator_type(this->__alloc));
 		}
-	protected:
+	private:
 		void	__move_elements_to_left(iterator first, iterator last)
 		{
 			for (; first != this->end(); first++, last++)
@@ -545,8 +552,15 @@ namespace ft
 					this->__alloc.construct(&(*first), *last);
 			}
 		}
-	};
+		template < typename U >
+		void swap(U& a, U&b)
+		{
+			U tmp = a;
+			a = b;
+			b = tmp;
+		}
+	}; // vector
 
-}
+} // namespace
 
 #endif
