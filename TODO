@@ -10,8 +10,8 @@
 -[x] enable_if
 -[x] is_integral
 -[ ] equal/lexographical compaire
--[ ] std::pair
--[ ] std::make_pair
+-[x] std::pair
+-[x] std::make_pair
 
 ## VECTOR TEMPLATE
 
