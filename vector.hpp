@@ -7,7 +7,7 @@
 #include "iterator.hpp"
 #include "type_traits.hpp"
 #include "pair.hpp"
-#include <algorithm>
+#include "algorithm.hpp"
 #include <memory>
 #include <limits>
 #include <stdexcept>
@@ -84,7 +84,7 @@ namespace ft
 				__capacity(distance(first, last)),
 				__size(distance(first, last))
 		{
-			__ptr = this->__alloc.allocate(__capacity);
+			__ptr = __alloc.allocate(__capacity);
 			for (size_type i = 0; first != last; i++, first++)
 				__alloc.construct(__ptr + i, *first);
 		}
@@ -98,9 +98,10 @@ namespace ft
 			__capacity(rhs.capacity()),
 			__size(rhs.size())
 		{
-			__ptr = this->__alloc.allocate(__capacity);
-			for (ft::pair<size_type, const_iterator> i(0, rhs.begin()); i.second != rhs.end(); i.first++, i.second++)
-				__alloc.construct(__ptr + i.first, *i.second);
+			__ptr = __alloc.allocate(__capacity);
+			// for (ft::pair<size_type, const_iterator> i(0, rhs.begin()); i.second != rhs.end(); i.first++, i.second++)
+			// 	__alloc.construct(__ptr + i.first, *i.second);
+			assign(rhs.begin(), rhs.end());
 		}
 		/**
 		 * @brief Destroy the vector object
@@ -112,16 +113,16 @@ namespace ft
 			this->__alloc.deallocate(this->__ptr, this->__capacity);
 		}
 		/**
-		 * @brief overload of the assignment operator destroys current objects and copies the
-		 * information from the reference object
+		 * @brief overload of the assignment operator uses copy constructor and swap function to copy elements
 		 * 
 		 * @param rhs reference to a vector
 		 * @return vector& 
 		 */
 		vector		&operator=(const vector &rhs)
 		{
-			vector	tmp(rhs),
-			swap(tmp);
+			this->clear();
+			if (this != &rhs && rhs.capacity() != 0)
+				assign(rhs.begin(), rhs.end());
 			return (*this);
 		}
 
@@ -526,10 +527,10 @@ namespace ft
 		}
 		void	swap(vector &rhs)
 		{
-			swap(__alloc, rhs.__alloc);
-			swap(__ptr, rhs.__ptr);
-			swap(__size, rhs.__size);
-			swap(__capacity, rhs.__capacity);
+			ft::swap(__alloc, rhs.__alloc);
+			ft::swap(__ptr, rhs.__ptr);
+			ft::swap(__size, rhs.__size);
+			ft::swap(__capacity, rhs.__capacity);
 		}
 		void					clear(void)
 		{
@@ -551,13 +552,6 @@ namespace ft
 				if (last < end())
 					this->__alloc.construct(&(*first), *last);
 			}
-		}
-		template < typename U >
-		void swap(U& a, U&b)
-		{
-			U tmp = a;
-			a = b;
-			b = tmp;
 		}
 	}; // vector
 

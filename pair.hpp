@@ -3,6 +3,12 @@
 
 namespace ft
 {
+	/**
+	 * @brief structure holding two values of diffrent types
+	 * 
+	 * @tparam T1 first type
+	 * @tparam T2 second type
+	 */
 	template < typename T1, typename T2 >
 	class pair
 	{
@@ -164,7 +170,7 @@ namespace ft
 	 * @return pair<T1,T2>
 	 */
 	template <class T1,class T2>
-	pair<T1,T2> make_pair (T1 x, T2 y)
+	pair<T1,T2> make_pair (T1 &x, T2 &y)
 	{
 		return ( pair<T1,T2>(x,y) );
 	}

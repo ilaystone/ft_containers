@@ -1,0 +1,85 @@
+	VECTOR TEST
+default constrctor: 
+
+fill constructor: 
+
+size: 4
+capacity:4
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+- 122
+- 122
+- 122
+- 122
+###############################################
+copy constructor: 
+
+size: 4
+capacity:4
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+- 122
+- 122
+- 122
+- 122
+###############################################
+range constructor: 
+
+size: 4
+capacity:4
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+- 122
+- 122
+- 122
+- 122
+###############################################
+iterator constructor: 
+
+size: 4
+capacity:4
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+- 16
+- 2
+- 77
+- 29
+###############################################
+assignment operator: 
+
+size: 4
+capacity:4
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+- 16
+- 2
+- 77
+- 29
+###############################################
+size: 0
+capacity:0
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+###############################################
+size: 3
+capacity:5
+is capacity ok: OK
+max_size: 2305843009213693951
+
+Content is:
+- 0
+- 0
+- 0
+###############################################
