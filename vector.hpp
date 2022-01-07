@@ -99,8 +99,6 @@ namespace ft
 			__size(rhs.size())
 		{
 			__ptr = __alloc.allocate(__capacity);
-			// for (ft::pair<size_type, const_iterator> i(0, rhs.begin()); i.second != rhs.end(); i.first++, i.second++)
-			// 	__alloc.construct(__ptr + i.first, *i.second);
 			assign(rhs.begin(), rhs.end());
 		}
 		/**
@@ -541,7 +539,7 @@ namespace ft
 		// return a copy of __alloc
 		allocator_type get_allocator() const
 		{
-			return (allocator_type(this->__alloc));
+			return (this->__alloc());
 		}
 	private:
 		void	__move_elements_to_left(iterator first, iterator last)
@@ -552,6 +550,58 @@ namespace ft
 				if (last < end())
 					this->__alloc.construct(&(*first), *last);
 			}
+		}
+	public:
+		friend bool	operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			if (lhs.size() != rhs.size())
+				return (false);
+			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(); it.first++, it.second++)
+			{
+				if (*(it.first) != (*it.second))
+					return (false);
+			}
+			return (true);
+		}
+		friend bool	operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return (!operator==(lhs, rhs));
+		}
+		friend bool	operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
+			{
+				if (*(it.first) < *(it.second))
+					return (true);
+			}
+			return (lhs.size() < rhs.size());
+		}
+		friend bool	operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
+			{
+				if (*(it.first) <= *(it.second))
+					return (true);
+			}
+			return (lhs.size() <= rhs.size());
+		}
+		friend bool	operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
+			{
+				if (*(it.first) > *(it.second))
+					return (true);
+			}
+			return (lhs.size() > rhs.size());
+		}
+		friend bool	operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
+			{
+				if (*(it.first) >= *(it.second))
+					return (true);
+			}
+			return (lhs.size() >= rhs.size());
 		}
 	}; // vector
 
