@@ -8,7 +8,7 @@
 #include "vector.hpp"
 
 #ifndef TEST_NAME
-# define TEST_NAME ft
+# define TEST_NAME std
 #endif
 
 # ifndef TEST_TYPE

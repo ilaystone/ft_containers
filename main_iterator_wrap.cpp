@@ -51,5 +51,11 @@ int main ()
 	TEST_NAME::vector<int>::iterator	end = myvec.end();
 	std::cout << it - end << std::endl;
 	std::cout << end - it << std::endl;
+	it = myvec.end();
+	std::cout << it - myvec.begin() << std::endl;
+
+	TEST_NAME::vector<int>::reverse_iterator		rbit(myvec.rbegin());
+	TEST_NAME::vector<int>::const_reverse_iterator	crbit = myvec.rbegin();
+	std::cout << (rbit == crbit) << std::endl;
 	return 0;
 }

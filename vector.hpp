@@ -81,8 +81,8 @@ namespace ft
 		vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
 			:	__alloc(alloc),
-				__capacity(distance(first, last)),
-				__size(distance(first, last))
+				__capacity(ft::distance(first, last)),
+				__size(ft::distance(first, last))
 		{
 			__ptr = __alloc.allocate(__capacity);
 			for (size_type i = 0; first != last; i++, first++)
@@ -312,7 +312,7 @@ namespace ft
 		{
 			if (n < 0 || n > this->__size)
 				throw (std::out_of_range("vector"));
-			return (operator[](n));
+			return (*(this->begin() + n));
 		}
 		/**
 		 * @brief read-only access to data in vector
@@ -325,7 +325,7 @@ namespace ft
 		{
 			if (n < 0 || n > this->__size)
 				throw std::out_of_range("vector");
-			return (*operator[](n));
+			return (*(this->begin() + n));
 		}
 		/**
 		 * @brief a read/write reference to the first element in the vector
@@ -377,10 +377,10 @@ namespace ft
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
 		{
 			this->clear();
-			difference_type			dist = distance(first, last);
+			size_type			dist = ft::distance(first, last);
 			if (dist > this->__capacity)
 				this->reserve(dist);
-			for (difference_type i = 0; i < dist; i++)
+			for (size_type i = 0; i < dist; i++)
 				this->__alloc.construct(this->__ptr + i, *first++);
 			this->__size = dist;
 		}
@@ -396,7 +396,7 @@ namespace ft
 			this->clear();
 			if (n > this->__capacity)
 				this->reserve(n);
-			for (difference_type i = 0; i < n; i++)
+			for (size_type i = 0; i < n; i++)
 				this->__alloc.construct(this->__ptr + i, val);
 			this->__size = n;
 		}
@@ -435,7 +435,7 @@ namespace ft
 		 */
 		iterator				insert(iterator position, const value_type &val)
 		{
-			difference_type			dist = distance(this->begin(), position);
+			difference_type			dist = ft::distance(this->begin(), position);
 
 			this->insert(position, 1, val);
 			return (iterator(&this->__ptr[dist]));
@@ -449,7 +449,7 @@ namespace ft
 		 */
 		void					insert(iterator position, size_type n, const value_type &val)
 		{
-			difference_type			dist = distance(this->begin(), position);
+			difference_type			dist = ft::distance(this->begin(), position);
 			size_type				old_size = this->__size;
 			iterator				new_pos;
 
@@ -481,8 +481,8 @@ namespace ft
 		void					insert(iterator position, InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type* = 0)
 		{
-			difference_type			dist = distance(this->begin(), position);
-			size_type				n = distance(first, last);
+			difference_type			dist = ft::distance(this->begin(), position);
+			size_type				n = ft::distance(first, last);
 			size_type				old_size = this->__size;
 			iterator				new_pos;
 
@@ -508,7 +508,7 @@ namespace ft
 		}
 		iterator				erase(iterator first, iterator last)
 		{
-			difference_type		dist = distance(this->begin(), first);
+			difference_type		dist = ft::distance(this->begin(), first);
 
 			if (last < end())
 			{
@@ -532,7 +532,7 @@ namespace ft
 		}
 		void					clear(void)
 		{
-			for (difference_type i = 0; i < distance(begin(), end()); i++)
+			for (difference_type i = 0; i < ft::distance(begin(), end()); i++)
 				this->__alloc.destroy(this->__ptr + i);
 			this->__size = 0;
 		}
@@ -556,52 +556,31 @@ namespace ft
 		{
 			if (lhs.size() != rhs.size())
 				return (false);
-			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(); it.first++, it.second++)
-			{
-				if (*(it.first) != (*it.second))
-					return (false);
-			}
-			return (true);
-		}
-		friend bool	operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-		{
-			return (!operator==(lhs, rhs));
+			return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 		}
 		friend bool	operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 		{
-			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
-			{
-				if (*(it.first) < *(it.second))
-					return (true);
-			}
-			return (lhs.size() < rhs.size());
+			return (ft::lexographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 		}
-		friend bool	operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		friend bool	operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 		{
-			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
-			{
-				if (*(it.first) <= *(it.second))
-					return (true);
-			}
-			return (lhs.size() <= rhs.size());
+			return (!(lhs == rhs));
 		}
 		friend bool	operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 		{
-			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
-			{
-				if (*(it.first) > *(it.second))
-					return (true);
-			}
-			return (lhs.size() > rhs.size());
+			return(rhs < lhs);
+		}
+		friend bool	operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+		{
+			return (!(rhs < lhs));
 		}
 		friend bool	operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 		{
-			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
-			{
-				if (*(it.first) >= *(it.second))
-					return (true);
-			}
-			return (lhs.size() >= rhs.size());
+			return (!(lhs < rhs));
+		}
+		friend void	swap(vector<T, Alloc> &lhs, vector<T, Alloc> &rhs)
+		{
+			lhs.swap(rhs);
 		}
 	}; // vector
 
