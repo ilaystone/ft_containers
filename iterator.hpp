@@ -181,7 +181,7 @@ namespace ft
 		typedef typename __traits_type::pointer         pointer;
 
 		reverse_iterator(void) : current() { return; }
-		reverse_iterator(const Iterator &iter) : current(iter) { return; }
+		explicit reverse_iterator(const Iterator &iter) : current(iter) { return; }
 		template < class __iter >
 		reverse_iterator(reverse_iterator<__iter> const &rev_iter) : current(rev_iter.base()) { return; }
 		template < class __iter >
@@ -201,6 +201,7 @@ namespace ft
 		reverse_iterator				&operator-=(difference_type n) {current += n; return (*this); }
 		pointer							operator->(void) const { return (&(operator*())); }
 		reference						operator[](difference_type n) { return (*(*this + n)); }
+
 	};
 
 	template < class Iter1, class Iter2 >
