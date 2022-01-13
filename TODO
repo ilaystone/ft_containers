@@ -9,7 +9,7 @@
 -[!] reverse_iterator
 -[x] enable_if
 -[x] is_integral
--[ ] equal/lexographical compaire
+-[x] equal/lexographical compaire
 -[x] std::pair
 -[x] std::make_pair
 
@@ -112,6 +112,8 @@
 ## MAP TEMPLATE
 
 -[ ] map
+	- [ ] avl_tree
+		|_ https://github.com/jgreitemann/avl-tree/blob/master/avl_tree.hpp
 
 
 RESOURCES :

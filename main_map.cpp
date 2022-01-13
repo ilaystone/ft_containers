@@ -6,11 +6,12 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 05:45:04 by ikhadem           #+#    #+#             */
-/*   Updated: 2022/01/10 05:46:01 by ikhadem          ###   ########.fr       */
+/*   Updated: 2022/01/13 13:12:46 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map>
+#include "map.hpp"
 
 int		main(void)
 {

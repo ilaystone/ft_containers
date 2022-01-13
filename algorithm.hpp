@@ -1,6 +1,8 @@
 #ifndef __ALGORITHM_HPP__
 #define __ALGORITHM_HPP__
 
+#include "iterator_traits.hpp"
+
 namespace ft
 {
 	/**
