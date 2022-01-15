@@ -72,9 +72,8 @@ namespace ft
 			template < typename Key, typename T >
 			friend class avl_tree<Key, T>::__const_map_iterator;
 			friend class avl_tree;
-		protected:
-			node												*__ptr;
 		public:
+			node												*__ptr;
 			typedef ft::bidirectional_iterator_tag				iterator_category;
 			typedef typename allocator_type::value_type			value_type;
 			typedef typename allocator_type::diffrence_type		diffrence_type;
@@ -416,17 +415,415 @@ namespace ft
 
 		__avl_tree_iterator				end(void)
 		{
-			
+			return (__avl_tree_iterator(__root));
 		}
 
+		__const_avl_tree_iterator		end(void) const
+		{
+			return (__const_avl_tree_iterator(__root));
+		}
+
+		__const_avl_tree_iterator		cend(void) const
+		{
+			return (__const_avl_tree_iterator(__root));
+		}
+
+		reference						front(void)
+		{
+			__avl_tree_iterator		b = begin();
+			return (*b);
+		}
+
+		const_reference					front(void) const
+		{
+			__const_avl_tree_iterator	b = begin();
+			return (*b);
+		}
+
+		reference						back(void)
+		{
+			__avl_tree_iterator		b = end();
+			return (*b);
+		}
+
+		const_reference					back(void) const
+		{
+			__const_avl_tree_iterator	b = end();
+			return (*b);
+		}
+
+		__avl_tree_iterator				insert(const T &t)
+		{
+			__avl_tree_iterator		res;
+
+			node					*parent = __root;
+			// binary search tree normal insertion
+			while (true)
+			{
+				++parent->n;
+				if (parent == __root || t < parent->data)
+				{
+					if (parent->left_child)
+						parent = parent->left_child;
+					else
+					{
+						parent->left_child = alloc.allocate(1);
+						alloc.construct(parent->left_child, t);
+						parent->left_child->parent = parent;
+						res = __avl_tree_iterator(parent->left_child);
+						break ;
+					}
+				}
+				else
+				{
+					if (parent->right_child)
+						parent = parent->right_child;
+					else
+					{
+						parent->right_child = alloc.allocate(1);
+						alloc.construct(parent->right_child, t);
+						parent->right_child->parent = parent;
+						res = __avl_tree_iterator(parent->right_child);
+						break ;
+					}
+				}
+			}
+			// Balancing
+			short		branch_depth = 1;
+			do
+			{
+				if (parent->depth > branch_depth)
+					break ;
+				parent->depth = 1 + branch_depth;
+				if (parent == __root)
+					break ;
+				if (parent->imbalance() < -1)
+				{
+					// double rotation case check
+					if (parent->left_child->imbalance() > 0)
+						rotate_left(parent->left_child);
+					rotate_right(parent);
+					break ;
+				}
+				else if (parent->imbalance() > 1)
+				{
+					// double rotation case check
+					if (parent->right_child->imbalance() < 0)
+						rotate_right(parent->right_child);
+					rotate_left(parent);
+					break ;
+				}
+				branch_depth = parent->depth;
+				parent = parent->parent;
+			} while (parent);
+			return (res);
+		}
+
+		__avl_tree_iterator						at(size_type i)
+		{
+			if (i >= size())
+				throw std::out_of_range("tree::at out-of-range");
+			size_type		j = i;
+			node			*ptr = __root->left_child;
+			while (true)
+			{
+				if (ptr->left_child)
+				{
+					if (j == ptr->left_child->n)
+						break ;
+					else if (j < ptr->left_child->n)
+						ptr = ptr->left_child;
+					else
+					{
+						j -= 1 + ptr->left_child->n;
+						ptr = ptr->right_child;
+					}
+				}
+				else
+				{
+					if (j == 0)
+						break ;
+					else
+					{
+						j--;
+						ptr = ptr->right_child;
+					}
+				}
+			}
+			return (__avl_tree_iterator(ptr));
+		}
+
+		__const_avl_tree_iterator						at(size_type i) const
+		{
+			if (i >= size())
+				throw std::out_of_range("tree::at out-of-range");
+			size_type		j = i;
+			node			*ptr = __root->left_child;
+			while (true)
+			{
+				if (ptr->left_child)
+				{
+					if (j == ptr->left_child->n)
+						break ;
+					else if (j < ptr->left_child->n)
+						ptr = ptr->left_child;
+					else
+					{
+						j -= 1 + ptr->left_child->n;
+						ptr = ptr->right_child;
+					}
+				}
+				else
+				{
+					if (j == 0)
+						break ;
+					else
+					{
+						j--;
+						ptr = ptr->right_child;
+					}
+				}
+			}
+			return (__const_avl_tree_iterator(ptr));
+		}
+
+		reference						operator[](size_type i)
+		{
+			return (*at(i));
+		}
+
+		const_reference					operator[](size_type i) const
+		{
+			return (*at(i));
+		}
+
+		__avl_tree_iterator				erase(__avl_tree_iterator it)
+		{
+			__avl_tree_iterator			itn(it);
+
+			++itn;
+			node						*ptr = it.ptr;
+			node						*q;
+			if (!ptr->left_child || !ptr->right_child)
+				q = ptr;
+			else
+				q = itn.ptr;
+			node						*s;
+			if (q->left_child)
+			{
+				s = q->left_child;
+				q->left_child = nullptr;
+			}
+			else
+			{
+				s = q->right_child;
+				q->right_child = nullptr;
+			}
+			if (s)
+				s->parent = q->parent;
+			if (q == q->parent->left_child)
+				q->parent->left_child = s;
+			else
+				q->parent->right_child = s;
+			node						*q_parent = ptr->parent;
+			if (q != ptr)
+			{
+				q->parent = ptr->parent;
+				if (q->parent->left_child == ptr)
+					q->parent->left_child = q;
+				else
+					q->parent->right_child = q;
+				q->left_child = ptr->right_child;
+				if (q->left_child)
+					q->left_child->parent = q;
+				q->right_child = ptr->right_child;
+				if (q->right_child)
+					q->right_child->parent = q;
+				q->n = ptr->n;
+				q->depth = ptr->depth;
+				ptr->left_child = nullptr;
+				ptr->right_child = nullptr;
+			}
+			if (q_parent == ptr)
+				q_parent = q;
+			node					*parent;
+			for (parent = q_parent; parent; parent = parent->parent)
+				--parent->n;
+			for (parent = q_parent; parent; parent = parent->parent)
+			{
+				parent->update_depth();
+				if (parent == __root)
+					break ;
+				if (parent->imbalace() < -1)
+				{
+					if (parent->left_child->imbalance() > 0)
+						rotate_left(parent->left_child);
+					rotate_right(parent);
+					break ;
+				}
+				else if (parent->imbalance() > 1)
+				{
+					if (parent->right_child->imbalance() < 0)
+						rotate_right(parent->right_child);
+					rotate_left(parent);
+					break ;
+				}
+			}
+			alloc.destroy(ptr);
+			alloc.deallocate(ptr, 1);
+			return (itn);
+		}
+
+		__avl_tree_iterator		find(const_reference rhs)
+		{
+			node			*ptr = __root->left_child;
+			while (ptr)
+			{
+				if (rhs == ptr->data)
+					return (__avl_tree_iterator(ptr));
+				else if (rhs < ptr->data);
+					ptr = ptr->left_child;
+				else
+					ptr = ptr->right_child;
+			}
+			return (end());
+		}
+
+		void		remove(const_reference rhs)
+		{
+			__avl_tree_iterator		it = find(rhs);
+			if (it == end())
+				return ;
+			do
+			{
+				it = erase(it);
+			} while (*it == rhs);
+		}
+
+		void		clear()
+		{
+			clear_node(__root);
+			__root->left_child = nullptr;
+			__root->n = 0;
+			__root->depth = 1;
+		}
+
+		void		swap(avl_tree &t)
+		{
+			ft::swap(__root, t.__root);
+		}
+
+		size_type	size() const
+		{
+			return (__root->n);
+		}
+
+		size_type	max_size();
+
+		bool		empty() const
+		{
+			return (__root->left_child == nullptr);
+		}
+
+		allocator_type		get_allocator(void)
+		{
+			return (alloc);
+		}
 
 	protected:
 		using	NodeAlloc = typename std::allocator_traits<allocator_type>::tempalte	rebind_alloc<node>;
 
 		NodeAlloc	alloc;
 		node		*__root;
+	private:
+		void	rotate_left(node *n)
+		{
+			node	*tmp = n->right_child->left_child;
+			if (n == n->parent->left_child)
+				n->parent->left_child = n->right_child;
+			else
+				n->parent->right_child = n->right_child;
+			n->right_child->parent = n->parent;
+			n->right_child->left_child = n;
+			n->parent - n->right_child;
+			n->right_child = tmp;
+			if (tmp)
+				tmp->parent = n;
+
+			n->update_n();
+			n->parent->n();
+			do
+			{
+				n->update_depth();
+				n = n->parent;
+			} while (n);
+		}
+
+		void	rotate_right(node *n)
+		{
+			node		*tmp = n->left_child->right_child;
+			if (n == n->parent->left_child)
+				n->parent->left_child = n->left_child;
+			else
+				n->parent->right_child = n->left_child;
+			n->left_child->parent = n->parent;
+			n->left_child->right_child = n;
+			n->parent = n->left_child;
+			n->left_child = tmp;
+			if (tmp)
+				tmp->parent = n;
+
+			n->update_n();
+			n->parent->update_n();
+			do
+			{
+				n->update_depth();
+				n = n->parent;
+			} while (n);
+		}
+
+		node		*deep_copy_node(const node *n)
+		{
+			node	cp_n = alloc.allocate(1);
+			alloc.construct(cp_n, n->data);
+			cp_n->n = n->n;
+			cp_n->depth = n->depth;
+			if (n->left_child)
+			{
+				cp_n->left_child = deep_copy_node(n->left_child);
+				cp_n->left_child->parent = cp_n;
+			}
+			if (n->right_child)
+			{
+				cp_n->right_child = deep_copy_node(n->right_child);
+				cp_n->right_child->parent = cp_n;
+			}
+			return (cp_n);
+		}
+
+		void		clear_node(node *n)
+		{
+			if (nd->left_child)
+			{
+				clear_node(n->left_child);
+				alloc.destroy(n->left_child);
+				alloc.deallocate(n->left_child, 1);
+			}
+			if (n->right_child)
+			{
+				clear_node(n->right_child);
+				allc.destroy(n->right_child);
+				alloc.deallocate(n->right_child, 1);
+			}
+		}
+
 
 	}; // class avl_tree
+	template< typename T, typename Alloc = std::allocator<T> >
+	void	swap(avl_tree<T, A> &lhs, avl_tree<T, A> &rhs)
+	{
+		lhs.swap(rhs);
+	}
 
 } // namespace ft
 
