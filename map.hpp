@@ -47,12 +47,19 @@ namespace ft
 	protected:
 		allocator_type		__alloc;
 		key_compare			__comp;
+		rep_tree			__ptr;
 
 	public:
 		explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
 		:	__alloc(alloc),
-			__comp(comp)
+			__comp(comp),
+			__ptr()
 		{ }
+
+		mapped_type		&operator[](const key_type &k)
+		{
+			
+		}
 
 	}; // class map
 } // namespace ft
