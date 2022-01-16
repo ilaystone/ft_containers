@@ -202,6 +202,7 @@ namespace ft
 		pointer							operator->(void) const { return (&(operator*())); }
 		reference						operator[](difference_type n) { return (*(*this + n)); }
 
+
 	};
 
 	template < class Iter1, class Iter2 >
@@ -222,28 +223,28 @@ namespace ft
 	inline bool
 	operator<(const reverse_iterator<Iter1> &lhs, const reverse_iterator<Iter2> &rhs)
 	{
-		return (lhs.base() < rhs.base());
+		return (rhs.base() < lhs.base());
 	}
 
 	template < class Iter1, class Iter2 >
 	inline bool
 	operator<=(const reverse_iterator<Iter1> &lhs, const reverse_iterator<Iter2> &rhs)
 	{
-		return (lhs.base() <= rhs.base());
+		return (rhs.base() <= lhs.base());
 	}
 
 	template < class Iter1, class Iter2 >
 	inline bool
 	operator>(const reverse_iterator<Iter1> &lhs, const reverse_iterator<Iter2> &rhs)
 	{
-		return (lhs.base() > rhs.base());
+		return (rhs.base() > lhs.base());
 	}
 
 	template < class Iter1, class Iter2 >
 	inline bool
 	operator>=(const reverse_iterator<Iter1> &lhs, const reverse_iterator<Iter2> &rhs)
 	{
-		return (lhs.base() >= rhs.base());
+		return (rhs.base() >= lhs.base());
 	}
 
 	template < class Iter1, class Iter2 >

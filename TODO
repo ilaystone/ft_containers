@@ -116,7 +116,7 @@
 		|_ https://github.com/jgreitemann/avl-tree/blob/master/avl_tree.hpp
 
 
-RESOURCES :
+## RESOURCES :
 	- https://www.cplusplus.com/
 	- https://en.cppreference.com/w/
 	- https://internalpointers.com/post/writing-custom-iterators-modern-cpp

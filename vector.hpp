@@ -553,10 +553,6 @@ namespace ft
 			}
 		}
 	public:
-		friend bool	operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-		{
-			return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
-		}
 		friend bool	operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
 		{
 			return (ft::lexographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
@@ -582,6 +578,11 @@ namespace ft
 			lhs.swap(rhs);
 		}
 	}; // vector
+	template < class T , class Allocator >
+	bool	operator==(const vector<T, Allocator> &lhs, const vector<T, Allocator> &rhs)
+	{
+		return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
 
 } // namespace
 

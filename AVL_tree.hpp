@@ -47,9 +47,6 @@ namespace ft
 			node(const T& t) : data(t), depth(1), n(1), left_child(nullptr), right_child(nullptr), parent(nullptr)
 			{ }
 
-			node(T &&t) : data(std::move(t)), depth(1), n(1), left_child(nullptr), right_child(nullptr), parent(nullptr)
-			{ }
-
 			void	update_depth(void)
 			{
 				depth = 1 + std::max(left_child ? left_child->depth : 0, right_child ? right_child->depth : 0);
@@ -69,8 +66,7 @@ namespace ft
 	public:
 		class __avl_tree_iterator
 		{
-			template < typename Key, typename T >
-			friend class avl_tree<Key, T>::__const_map_iterator;
+			template < typename Key, typename _T >
 			friend class avl_tree;
 		public:
 			node												*__ptr;
@@ -145,8 +141,8 @@ namespace ft
 					do
 					{
 						before = __ptr;
-						__ptr = ptr->parent;
-					} while (ptr && before == ptr->right_child);
+						__ptr = __ptr->parent;
+					} while (__ptr && before == __ptr->right_child);
 				}
 				return (*this);
 			}
@@ -172,7 +168,7 @@ namespace ft
 					do
 					{
 						before = __ptr;
-						__ptr = ptr->parent;
+						__ptr = __ptr->parent;
 					} while (__ptr && before == __ptr->left_child);
 				}
 			}
@@ -194,7 +190,7 @@ namespace ft
 				return (&(__ptr->data));
 			}
 
-		} // class __avl_tree_iterator
+		}; // class __avl_tree_iterator
 
 		class __const_avl_tree_iterator
 		{
@@ -272,7 +268,7 @@ namespace ft
 					do
 					{
 						before = __ptr;
-						ptr = ptr->parent;
+						__ptr = __ptr->parent;
 					} while (__ptr && before == __ptr->right_child);
 				}
 				return (*this);
@@ -299,7 +295,7 @@ namespace ft
 					do
 					{
 						before = __ptr;
-						ptr = ptr->parent;
+						__ptr = __ptr->parent;
 					} while (__ptr && before == __ptr->left_child);
 				}
 				return (*this);
@@ -322,7 +318,7 @@ namespace ft
 				return (&(__ptr->data));
 			}
 
-		} // class __const_avl_tree_iterator
+		}; // class __const_avl_tree_iterator
 
 		avl_tree(void)
 		{
@@ -334,14 +330,6 @@ namespace ft
 		avl_tree(const avl_tree &rhs)
 		{
 			*this = rhs;
-		}
-
-		avl_tree(tree &&rhs)
-		{
-			__root = rhs.__root;
-			rhs.__root = alloc.allocate(1);
-			alloc.construct(rhs.__root);
-			rhs.__root->n = 0;
 		}
 
 		~avl_tree(void)
@@ -357,22 +345,15 @@ namespace ft
 			return (*this);
 		}
 
-		avl_tree	&operator(avl_tree &&rhs)
-		{
-			clear();
-			ft::swap(__root, rhs.__root);
-			return (*this);
-		}
-
 		bool							operator==(const avl_tree &rhs) const
 		{
 			__const_avl_tree_iterator		it1, it2;
-			for (it = cbegin(), it2 = rhs.cbegin(); it1 != cend() && it2 != rhs.cend(); ++it1, ++it2)
+			for (it1 = begin(), it2 = rhs.begin(); it1 != end() && it2 != rhs.end(); ++it1, ++it2)
 			{
 				if (*it1 != *it2)
 					return (false);
 			}
-			if (it1 == cend() && it2 == rhs.cend())
+			if (it1 == end() && it2 == rhs.end())
 				return (true);
 			else
 				return (false);
@@ -385,7 +366,7 @@ namespace ft
 
 		__avl_tree_iterator				begin(void)
 		{
-			node		*ptr = root;
+			node		*ptr = __root;
 			while (ptr->left_child)
 			{
 				ptr = ptr->left_child;
@@ -395,7 +376,7 @@ namespace ft
 
 		__const_avl_tree_iterator		begin(void) const
 		{
-			const node		*ptr = root;
+			const node		*ptr = __root;
 			while (ptr->left_child)
 			{
 				ptr = ptr->left_child;
@@ -403,15 +384,6 @@ namespace ft
 			return (__avl_tree_iterator(ptr));
 		}
 
-		__const_avl_tree_iterator				cbegin(void) const
-		{
-			const node		*ptr = root;
-			while (ptr->left_child)
-			{
-				ptr = ptr->left_child;
-			}
-			return (__const_avl_tree_iterator(ptr));
-		}
 
 		__avl_tree_iterator				end(void)
 		{
@@ -419,11 +391,6 @@ namespace ft
 		}
 
 		__const_avl_tree_iterator		end(void) const
-		{
-			return (__const_avl_tree_iterator(__root));
-		}
-
-		__const_avl_tree_iterator		cend(void) const
 		{
 			return (__const_avl_tree_iterator(__root));
 		}
@@ -681,7 +648,7 @@ namespace ft
 			{
 				if (rhs == ptr->data)
 					return (__avl_tree_iterator(ptr));
-				else if (rhs < ptr->data);
+				else if (rhs < ptr->data)
 					ptr = ptr->left_child;
 				else
 					ptr = ptr->right_child;
@@ -731,10 +698,9 @@ namespace ft
 		}
 
 	protected:
-		using	NodeAlloc = typename std::allocator_traits<allocator_type>::tempalte	rebind_alloc<node>;
 
-		NodeAlloc	alloc;
-		node		*__root;
+		allocator_type	alloc;
+		node			*__root;
 	private:
 		void	rotate_left(node *n)
 		{
@@ -803,7 +769,7 @@ namespace ft
 
 		void		clear_node(node *n)
 		{
-			if (nd->left_child)
+			if (n->left_child)
 			{
 				clear_node(n->left_child);
 				alloc.destroy(n->left_child);
@@ -812,19 +778,13 @@ namespace ft
 			if (n->right_child)
 			{
 				clear_node(n->right_child);
-				allc.destroy(n->right_child);
+				alloc.destroy(n->right_child);
 				alloc.deallocate(n->right_child, 1);
 			}
 		}
 
 
 	}; // class avl_tree
-	template< typename T, typename Alloc = std::allocator<T> >
-	void	swap(avl_tree<T, A> &lhs, avl_tree<T, A> &rhs)
-	{
-		lhs.swap(rhs);
-	}
-
 } // namespace ft
 
 #endif
