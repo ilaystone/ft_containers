@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   stack.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
+/*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/20 17:00:30 by llefranc          #+#    #+#             */
-/*   Updated: 2021/02/24 16:58:56 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2022/01/31 09:37:22 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STACK_HPP
 #define STACK_HPP
 
-#include "list.hpp"
+#include "vector.hpp"
 
 namespace ft
 {
@@ -42,7 +42,7 @@ namespace ft
     *   @param T            Type of container's elements.
     *   @param Container    Container object used internally to store T elements.
     */
-    template <class T, class Container = ft::list<T> >
+    template <class T, class Container = ft::vector<T> >
     class stack
     {
             /* ------------------------------------------------------------- */

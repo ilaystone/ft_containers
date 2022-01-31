@@ -488,7 +488,7 @@ namespace ft
 			iterator				new_pos;
 
 			if (this->__size + n > this->__capacity)
-				this->reserve(this->__capacity + n);
+				this->reserve(this->__size + n);
 			this->__size = old_size;
 			new_pos  = iterator((&this->__ptr[dist]));
 			if (new_pos != this->end())
