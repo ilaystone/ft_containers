@@ -1,6 +1,7 @@
 #include "map.hpp"
 
-int		main(void)
+int		main()
 {
+	ft::map<int, int>		first;
 	return (0);
 }
