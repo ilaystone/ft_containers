@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 13:10:11 by obouykou          #+#    #+#             */
-/*   Updated: 2022/01/31 10:01:10 by ikhadem          ###   ########.fr       */
+/*   Updated: 2022/02/09 14:00:05 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include "map.hpp"
 
 #ifndef NS
-#define NS std
+#define NS ft
 #endif
 
 template <typename T>
@@ -708,7 +708,6 @@ int main(void)
 		print_map(map1, "map1");
 		std::cout << "map1.erase(0): " << map1.erase(0) << std::endl;
 		NS::map<int, int>::iterator it = map1.begin();
-		std::advance(it, 2);
 		map1.erase(map1.begin(), it);
 		print_map(map1, "map1");
 		map1.erase(map1.begin());

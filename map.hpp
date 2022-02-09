@@ -107,6 +107,10 @@ namespace ft
 		pair<const_iterator,const_iterator>	equal_range(const key_type &k) const;
 		pair<iterator,iterator>				equal_range(const key_type &k);
 
+	// ************************** Allocator ************************************ //
+
+		allocator_type get_allocator() const;
+
 	// ******************************* Non-public ******************************* //
 
 		protected:
@@ -606,6 +610,13 @@ namespace ft
 	template <class Key, class T, class Compare, class Alloc>
 	void	swap(map<Key, T, Compare, Alloc> &x, map<Key, T, Compare, Alloc> &y) {
 		x.swap(y);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	typename map<Key, T, Compare, Alloc>::allocator_type
+	map<Key, T, Compare, Alloc>::get_allocator() const
+	{
+		return (this->_alloc);
 	}
 
 	// ################################## Other ####################################
