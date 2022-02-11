@@ -6,7 +6,7 @@
 namespace ft
 {
 	/**
-	 * @brief Compares the lements of range [firts1, last1) with those in the range [fiorst2, last2)
+	 * @brief Compares the elements of range [firts1, last1) with those in the range [fiorst2, last2)
 	 * 	and returns true if first range is lexicoographicaly less than second range
 	 * 
 	 * @tparam InputIterator1 type of first range
@@ -33,7 +33,17 @@ namespace ft
 		}
 		return (first2 != last2);
 	}
-
+	/**
+	 * @brief checks if a range [first1 , last1] equals in a liniar manner another range starting from first2
+	 * 
+	 * @tparam Ite1 type of first range
+	 * @tparam Ite2 type of second range
+	 * @param first1 begin of first range
+	 * @param last1 end of first range
+	 * @param first2 begin of second range
+	 * @return true 
+	 * @return false 
+	 */
 	template <class Ite1, class Ite2>
 	bool	equal(Ite1 first1, Ite1 last1, Ite2 first2)
 	{
@@ -45,7 +55,6 @@ namespace ft
 		}
 		return true;
 	}
-
 	/**
 	 * @brief swaps two elements @a and @b classes that make use of this
 	 * 	should have copy constructor implemented

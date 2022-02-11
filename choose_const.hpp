@@ -8,7 +8,6 @@ namespace ft
     */
     template <bool isConst, typename isFalse, typename isTrue>
     struct chooseConst {};
-
     /**
     *   Typedef: pointer, ref...
     */
@@ -17,7 +16,6 @@ namespace ft
     {
         typedef isFalse type;
     };
-
     /**
     *   Typedef: const pointer, const ref...
     */

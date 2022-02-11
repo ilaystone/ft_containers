@@ -4,6 +4,10 @@
 #include <cstddef>  // For std::ptrdiff_t
 namespace ft
 {
+	/**
+	 * @brief a list of tags that semantically defines the behavior of an iterator
+	 * 
+	 */
 	struct input_iterator_tag  {};
 
 	struct output_iterator_tag {};
@@ -11,6 +15,11 @@ namespace ft
 	struct bidirectional_iterator_tag : public forward_iterator_tag       {};
 	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
+	/**
+	 * @brief a pseudo-interface defining basic info about an iterator(its traits)
+	 * 
+	 * @tparam Iterator 
+	 */
 	template< class Iterator >
 	struct iterator_traits
 	{
@@ -41,6 +50,17 @@ namespace ft
 		typedef random_access_iterator_tag          iterator_category;
 	};
 
+	/**
+	 * @brief pseudo-interface defining basic info about an iterato
+	 * basiacly forcing an iterator class to have these typedefs
+	 * (usally extraced from the iterator_traits class)
+	 * 
+	 * @tparam Category 
+	 * @tparam T 
+	 * @tparam Distance 
+	 * @tparam Pointer 
+	 * @tparam Reference 
+	 */
 	template< class Category, class T, class Distance = std::ptrdiff_t,
 			class Pointer = T*, class Reference = T& >
 	struct __iterator__

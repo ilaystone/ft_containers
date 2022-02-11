@@ -6,7 +6,7 @@
 /*   By: ikhadem <ikhadem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/20 17:00:30 by llefranc          #+#    #+#             */
-/*   Updated: 2022/01/31 09:37:22 by ikhadem          ###   ########.fr       */
+/*   Updated: 2022/02/10 16:24:50 by ikhadem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ namespace ft
             /* ------------------------------------------------------------- */
             /* ------------------------- ATTRIBUTES ------------------------ */
 
-        private:
+        protected:
 
-            container_type  _ctnr;  // Underlying container object (either a vector, a list or a
+            container_type  c;  // Underlying container object (either a vector, a list or a
                                     // deque) where the elements are stored.
             
             /* ------------------------------------------------------------- */
@@ -76,7 +76,7 @@ namespace ft
             *               ctnr calls the default constructor and will be empty.
             */
             explicit stack (const container_type& ctnr = container_type()) :
-                    _ctnr(ctnr) {}
+                    c(ctnr) {}
             
             /**
             *   Copy constructor, creates a stack with the same container object.
@@ -84,7 +84,7 @@ namespace ft
             *   @param x        The stack that will be copied.
             */
             stack(const stack& x) :
-                    _ctnr(x._ctnr) {}
+                    c(x.c) {}
                 
             /**
             *   This is the destructor of the container object stored as data that 
@@ -101,7 +101,7 @@ namespace ft
             stack& operator=(const stack& x)
             {
                 stack tmp(x);
-                swap(_ctnr, tmp._ctnr);
+                swap(c, tmp.c);
                 return *this;
             }
             
@@ -114,28 +114,28 @@ namespace ft
             *   Calls member function empty of the underlying container object, which returns 
             *   true if the container is empty.
             */
-            bool empty() const                  { return _ctnr.empty(); }
+            bool empty() const                  { return c.empty(); }
             
             /**
             *   
             *   Calls member function size of the underlying container object, which returns 
             *   container' size.
             */
-            size_type size() const              { return _ctnr.size(); }
+            size_type size() const              { return c.size(); }
             
             /**
             *   Calls member function back of the underlying container object, which returns a 
             *   reference to the top element in the stack. Since stacks are last-in first-out 
             *   containers, the top element is the last element inserted into the stack.
             */
-            value_type& top()                   { return _ctnr.back(); }
+            value_type& top()                   { return c.back(); }
 
             /**
             *   Calls member function back of the underlying container object, which returns a 
             *   const reference to the top element in the stack. Since stacks are last-in 
             *   first-out containers, the top element is the last element inserted into the stack.
             */
-            const value_type& top() const       { return _ctnr.back(); }
+            const value_type& top() const       { return c.back(); }
             
             /**
             *   Calls member function push_back of the underlying container object, which inserts 
@@ -143,14 +143,14 @@ namespace ft
             *
             *   @param val  Content of the new element will be initialized to a copy of val.
             */
-            void push (const value_type& val)   { _ctnr.push_back(val); }
+            void push (const value_type& val)   { c.push_back(val); }
             
             /**
             *   Calls member function pop_back of the underlying container object, which removes 
             *   the element on top of the stack (latest element inserted), reducing his size by one.
             *   This calls the removed element's destructor.
             */
-            void pop()                          { _ctnr.pop_back(); }
+            void pop()                          { c.pop_back(); }
 
 
             /* ------------------------------------------------------------- */
@@ -161,12 +161,12 @@ namespace ft
             *   Each of these operator overloads calls the same operator on the underlying container objects.
             */
 
-            friend bool operator==(const stack& lhs, const stack& rhs)  { return lhs._ctnr == rhs._ctnr; }
-            friend bool operator!=(const stack& lhs, const stack& rhs)  { return lhs._ctnr != rhs._ctnr; }
-            friend bool operator<(const stack& lhs, const stack& rhs)   { return lhs._ctnr < rhs._ctnr; }
-            friend bool operator<=(const stack& lhs, const stack& rhs)  { return lhs._ctnr <= rhs._ctnr; }
-            friend bool operator>(const stack& lhs, const stack& rhs)   { return lhs._ctnr > rhs._ctnr; }
-            friend bool operator>=(const stack& lhs, const stack& rhs)  { return lhs._ctnr >= rhs._ctnr; }
+            friend bool operator==(const stack& lhs, const stack& rhs)  { return lhs.c == rhs.c; }
+            friend bool operator!=(const stack& lhs, const stack& rhs)  { return lhs.c != rhs.c; }
+            friend bool operator<(const stack& lhs, const stack& rhs)   { return lhs.c < rhs.c; }
+            friend bool operator<=(const stack& lhs, const stack& rhs)  { return lhs.c <= rhs.c; }
+            friend bool operator>(const stack& lhs, const stack& rhs)   { return lhs.c > rhs.c; }
+            friend bool operator>=(const stack& lhs, const stack& rhs)  { return lhs.c >= rhs.c; }
 
 
             /* ----------------- PRIVATE MEMBER FUNCTIONS ------------------ */
