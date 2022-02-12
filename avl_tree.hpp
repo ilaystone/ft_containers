@@ -20,14 +20,14 @@ namespace ft
 	class avl_tree
 	{
 	public:
-		typedef T											value_type;
-		typedef Allocator									allocator_type;
-		typedef typename std::allocator_traits<Allocator>::reference			reference;
-		typedef typename std::allocator_traits<Allocator>::const_reference	const_reference;
-		typedef typename std::allocator_traits<Allocator>::pointer			pointer;
-		typedef typename std::allocator_traits<Allocator>::const_pointer		const_pointer;
+		typedef T																value_type;
+		typedef Allocator														allocator_type;
+		typedef typename allocator_type::reference								reference;
+		typedef typename allocator_type::const_reference						const_reference;
+		typedef typename allocator_type::pointer								pointer;
+		typedef typename allocator_type::const_pointer							const_pointer;
 		typedef typename std::allocator_traits<Allocator>::size_type			size_type;
-		typedef typename std::allocator_traits<Allocator>::diffrence_type		diffrence_type;
+		typedef typename std::allocator_traits<Allocator>::difference_type		difference_type;
 
 
 	private:
@@ -45,9 +45,6 @@ namespace ft
 			{ }
 
 			node(const T& t) : data(t), depth(1), n(1), left_child(nullptr), right_child(nullptr), parent(nullptr)
-			{ }
-
-			node(T &&t) : data(std::move(t)), depth(1), n(1), left_child(nullptr), right_child(nullptr), parent(nullptr)
 			{ }
 
 			void	update_depth(void)
@@ -69,14 +66,12 @@ namespace ft
 	public:
 		class __avl_tree_iterator
 		{
-			template < typename Key, typename T >
-			friend class avl_tree<Key, T>::__const_map_iterator;
 			friend class avl_tree;
 		public:
 			node												*__ptr;
 			typedef ft::bidirectional_iterator_tag				iterator_category;
 			typedef typename allocator_type::value_type			value_type;
-			typedef typename allocator_type::diffrence_type		diffrence_type;
+			typedef typename allocator_type::difference_type	difference_type;
 			typedef typename allocator_type::reference			reference;
 			typedef typename allocator_type::pointer			pointer;
 
@@ -194,7 +189,7 @@ namespace ft
 				return (&(__ptr->data));
 			}
 
-		} // class __avl_tree_iterator
+		}; // class __avl_tree_iterator
 
 		class __const_avl_tree_iterator
 		{
@@ -322,7 +317,7 @@ namespace ft
 				return (&(__ptr->data));
 			}
 
-		} // class __const_avl_tree_iterator
+		}; // class __const_avl_tree_iterator
 
 		avl_tree(void)
 		{
@@ -346,13 +341,6 @@ namespace ft
 		avl_tree						&operator=(const avl_tree &rhs)
 		{
 			__root = deep_copy_node(rhs.__root);
-			return (*this);
-		}
-
-		avl_tree	&operator(avl_tree &&rhs)
-		{
-			clear();
-			ft::swap(__root, rhs.__root);
 			return (*this);
 		}
 
@@ -695,7 +683,10 @@ namespace ft
 			return (__root->n);
 		}
 
-		size_type	max_size();
+		size_type	max_size()
+		{
+			return alloc.max_size();
+		}
 
 		bool		empty() const
 		{
@@ -723,13 +714,13 @@ namespace ft
 				n->parent->right_child = n->right_child;
 			n->right_child->parent = n->parent;
 			n->right_child->left_child = n;
-			n->parent - n->right_child;
+			n->parent = n->right_child;
 			n->right_child = tmp;
 			if (tmp)
 				tmp->parent = n;
 
 			n->update_n();
-			n->parent->n();
+			n->parent->update_n();
 			do
 			{
 				n->update_depth();

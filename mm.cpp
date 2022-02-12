@@ -1,13 +1,14 @@
-#include "avl_tree.hpp"
-#include "pair.hpp"
+#include "map.hpp"
+#include <map>
 #include <iostream>
 
 int		main()
 {
-	ft::avl_tree<ft::pair<int, int>>	f;
+	ft::map<int, int>		first;
 
-	// f[1] = 1;
-	// f[2] = 3;
-	std::cout << f[1] << std::endl;
+	first.insert(ft::make_pair(1, 10));
+	first.insert(ft::make_pair(2, 20));
+	std::cout << first[0] << std::endl;
+	std::cout << first[1] << std::endl;
 	return 0;
 }

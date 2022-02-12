@@ -1,67 +1,124 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include "map_base.hpp"
-#include "map_iterator.hpp"
 #include "pair.hpp"
 #include "algorithm.hpp"
 #include "type_traits.hpp"
 #include "iterator_traits.hpp"
 #include "iterator.hpp"
+#include "avl_tree.hpp"
+
+#include <memory>
+#include <limits>
+#include <stdexcept>
+#include <algorithm>
+#include <iterator>
 
 namespace ft
 {
 	template < class Key,                                // map::key_type
 		class T,                                         // map::mapped_type
 		class Compare = std::less<Key>,                  // map::key_compare
-		class Alloc = std::allocator<pair<const Key,T> > // map::allocator_type
+		class Alloc = std::allocator<ft::pair<const Key,T> > // map::allocator_type
 		>
 	class map {
-		public:
+	public:
 
-		typedef Key													key_type;
-		typedef T													mapped_type;
-		typedef pair<const key_type, mapped_type>					value_type;
-		typedef Compare												key_compare;
-		class														value_compare;
+		typedef Key																key_type;
+		typedef T																mapped_type;
+		typedef pair<const key_type, mapped_type>								value_type;
+		typedef Compare															key_compare;
+		class																	value_compare;
 
-		typedef Alloc												allocator_type;
-		typedef typename allocator_type::reference					reference;
-		typedef typename allocator_type::const_reference			const_reference;
-		typedef typename allocator_type::pointer					pointer;
-		typedef typename allocator_type::const_pointer				const_pointer;
-		typedef ft::mapNode<value_type>								node_type;
-		typedef node_type*											node_ptr;
+		typedef Alloc															allocator_type;
+		typedef typename allocator_type::reference								reference;
+		typedef typename allocator_type::const_reference						const_reference;
+		typedef typename allocator_type::pointer								pointer;
+		typedef typename allocator_type::const_pointer							const_pointer;
 
-		typedef ptrdiff_t											difference_type;
-		typedef size_t												size_type;
+		typedef typename std::allocator_traits<Alloc>::template
+			rebind_alloc<value_type>::other	__pair_alloc_type;
+		typedef	ft::avl_tree<value_type, __pair_alloc_type>						AVT_type;
 
-		typedef ft::map_iterator<value_type, node_type>				iterator;
-		typedef ft::map_iterator<const value_type, node_type>		const_iterator;
-		typedef ft::reverse_iterator<iterator>						reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+		typedef typename AVT_type::__avl_tree_iterator							iterator;
+		typedef typename AVT_type::__const_avl_tree_iterator					const_iterator;
+		typedef typename ft::reverse_iterator<iterator>							reverse_iterator;
+		typedef	typename ft::reverse_iterator<const_iterator>					const_reverse_iterator;
+		typedef typename allocator_type::size_type								size_type;
+		typedef typename allocator_type::difference_type 						difference_type;
+
+
+
+	private:
+		AVT_type		__ptr;
+		key_compare		__comp;
+		allocator_type	__alloc;
+
+	public:
 
 	// ************************** Member functions ****************************** //
 
 		explicit map(const key_compare &comp = key_compare(),
-				const allocator_type &alloc = allocator_type());
+				const allocator_type &alloc = allocator_type())
+		:	__ptr(),
+			__comp(comp),
+			__alloc(alloc)
+		{
+			return ;
+		}
 		template <class Ite>
 		map(typename ft::enable_if<!std::numeric_limits<Ite>::is_integer, Ite>::type first,
 				Ite last, const key_compare &comp = key_compare(),
-				const allocator_type &alloc = allocator_type());
-		map(const map &src);
-		virtual ~map(void);
+				const allocator_type &alloc = allocator_type())
+		:	__ptr(),
+			__comp(comp),
+			__alloc(alloc)
+		{
+			for (Ite it = first, first != last, first++)
+				__ptr.insert(*first);
+		}
+		map(const map &src)
+		{
+			if (this != *src)
+			{
+				*this = src;
+			}
+		}
+		virtual ~map(void)
+		{
+			return ;
+		}
 
-		map	&operator=(map const &rhs);
+		map	&operator=(map const &rhs)
+		{
+			__ptr = rhs.__ptr;
+			__comp = rhs.__comp;
+			__alloc = rhs.__alloc;
+		}
 
 	// ****************************** Iterators ********************************* //
 
-		iterator				begin(void);
-		const_iterator			begin(void) const;
-		iterator				end(void);
-		const_iterator			end(void) const;
+		iterator				begin(void)
+		{
+			return __ptr.begin();
+		}
+		const_iterator			begin(void) const
+		{
+			return __ptr.begin();
+		}
+		iterator				end(void)
+		{
+			return __ptr.end();
+		}
+		const_iterator			end(void) const
+		{
+			return __ptr.end();
+		}
 
-		reverse_iterator		rbegin(void);
+		reverse_iterator		rbegin(void)
+		{
+			return ft::reverse_iterator<iterator>(__ptr.end());
+		}
 		const_reverse_iterator	rbegin(void) const;
 		reverse_iterator		rend(void);
 		const_reverse_iterator	rend(void) const;
@@ -74,20 +131,30 @@ namespace ft
 
 	// ******************************* Ele Access ******************************* //
 
-		mapped_type	&operator[](const key_type &k);
+		mapped_type	&operator[](const key_type &k)
+		{
+			iterator		it = __ptr.find(ft::make_pair(k, mapped_type()));
+			if (it == __ptr.end())
+				std::cout << "it is the end\n"<< std::endl;
+			std::cout << (*it).first << ", " << (*it).second << std::endl;
+			return __ptr[k].second;
+		}
 
 	// ******************************** Modifiers ******************************* //
 
-		ft::pair<iterator, bool>	insert(const value_type &val);
+		ft::pair<iterator, bool>	insert(const value_type &val)
+		{
+			return __ptr.insert(val);
+		}
 		iterator					insert(iterator position, const value_type &val);
 		template <class Ite> void	insert(Ite first, Ite last);
 
-		void		erase(iterator position);
-		size_type	erase(const key_type &k);
-		void		erase(iterator first, iterator last);
+		void						erase(iterator position);
+		size_type					erase(const key_type &k);
+		void						erase(iterator first, iterator last);
 
-		void		swap(map &x);
-		void		clear(void);
+		void						swap(map &x);
+		void						clear(void);
 
 	// ******************************* Observers ******************************** //
 
@@ -96,14 +163,14 @@ namespace ft
 
 	// ******************************* Operations ******************************* //
 
-		iterator		find(const key_type &k);
-		const_iterator	find(const key_type &k) const;
-		size_type		count(const key_type &k) const;
+		iterator							find(const key_type &k);
+		const_iterator						find(const key_type &k) const;
+		size_type							count(const key_type &k) const;
 
-		iterator		lower_bound(const key_type &k);
-		const_iterator	lower_bound(const key_type &k) const;
-		iterator		upper_bound(const key_type &k);
-		const_iterator	upper_bound(const key_type &k) const;
+		iterator							lower_bound(const key_type &k);
+		const_iterator						lower_bound(const key_type &k) const;
+		iterator							upper_bound(const key_type &k);
+		const_iterator						upper_bound(const key_type &k) const;
 		pair<const_iterator,const_iterator>	equal_range(const key_type &k) const;
 		pair<iterator,iterator>				equal_range(const key_type &k);
 
@@ -113,14 +180,9 @@ namespace ft
 
 	// ******************************* Non-public ******************************* //
 
-		protected:
-		private:
-		node_ptr				_data;
-		key_compare				_key_cmp;
-		allocator_type			_alloc;
-		size_type				_size;
-		const static size_type	_max_size;
 	};
+
+
 
 	template <class Key, class T, class Compare, class Alloc>
 	class	map<Key, T, Compare, Alloc>::value_compare {
