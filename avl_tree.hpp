@@ -13,6 +13,7 @@
 #include <exception>
 #include <stdexcept>
 #include <type_traits>
+#include <functional>
 
 namespace ft
 {
@@ -29,7 +30,6 @@ namespace ft
 		typedef typename std::allocator_traits<Allocator>::size_type			size_type;
 		typedef typename std::allocator_traits<Allocator>::difference_type		difference_type;
 
-
 	private:
 		class node
 		{
@@ -41,10 +41,10 @@ namespace ft
 			node			*left_child;
 			node			*right_child;
 
-			node() : depth(1), n(1), left_child(nullptr), right_child(nullptr), parent(nullptr)
+			node() : depth(1), n(1), parent(nullptr), left_child(nullptr), right_child(nullptr)
 			{ }
 
-			node(const T& t) : data(t), depth(1), n(1), left_child(nullptr), right_child(nullptr), parent(nullptr)
+			node(const T& t) : data(t), depth(1), n(1), parent(nullptr), left_child(nullptr), right_child(nullptr)
 			{ }
 
 			void	update_depth(void)
@@ -86,6 +86,12 @@ namespace ft
 			}
 
 			__avl_tree_iterator(const __avl_tree_iterator &rhs)
+			{
+				__ptr = rhs.__ptr;
+			}
+
+			template < class __const_avl_tree_iterator >
+			__avl_tree_iterator(const __const_avl_tree_iterator &rhs)
 			{
 				__ptr = rhs.__ptr;
 			}
@@ -170,6 +176,7 @@ namespace ft
 						__ptr = __ptr->parent;
 					} while (__ptr && before == __ptr->left_child);
 				}
+				return (*this);
 			}
 
 			__avl_tree_iterator		operator--(int)
@@ -198,7 +205,7 @@ namespace ft
 		public:
 			typedef ft::bidirectional_iterator_tag				iterator_category;
 			typedef typename allocator_type::value_type			value_type;
-			typedef typename allocator_type::diffrence_type		diffrence_type;
+			typedef typename allocator_type::difference_type	difference_type;
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef typename allocator_type::const_pointer		const_pointer;
 
@@ -213,6 +220,12 @@ namespace ft
 			}
 
 			__const_avl_tree_iterator(const __const_avl_tree_iterator &rhs)
+			{
+				__ptr = rhs.__ptr;
+			}
+
+			template < class __avl_tree_iterator >
+			__const_avl_tree_iterator(const __avl_tree_iterator &rhs)
 			{
 				__ptr = rhs.__ptr;
 			}
@@ -370,17 +383,17 @@ namespace ft
 			{
 				ptr = ptr->left_child;
 			}
-			return (__const_avl_tree_iterator(ptr));
+			return (__avl_tree_iterator(ptr));
 		}
 
 		__const_avl_tree_iterator		begin(void) const
 		{
-			const node		*ptr = __root;
+			node		*ptr = __root;
 			while (ptr->left_child)
 			{
 				ptr = ptr->left_child;
 			}
-			return (__avl_tree_iterator(ptr));
+			return (__const_avl_tree_iterator(ptr));
 		}
 
 		__avl_tree_iterator				end(void)
@@ -567,12 +580,12 @@ namespace ft
 			__avl_tree_iterator			itn(it);
 
 			++itn;
-			node						*ptr = it.ptr;
+			node						*ptr = it.__ptr;
 			node						*q;
 			if (!ptr->left_child || !ptr->right_child)
 				q = ptr;
 			else
-				q = itn.ptr;
+				q = itn.__ptr;
 			node						*s;
 			if (q->left_child)
 			{
@@ -598,7 +611,7 @@ namespace ft
 					q->parent->left_child = q;
 				else
 					q->parent->right_child = q;
-				q->left_child = ptr->right_child;
+				q->left_child = ptr->left_child;
 				if (q->left_child)
 					q->left_child->parent = q;
 				q->right_child = ptr->right_child;
@@ -619,7 +632,7 @@ namespace ft
 				parent->update_depth();
 				if (parent == __root)
 					break ;
-				if (parent->imbalace() < -1)
+				if (parent->imbalance() < -1)
 				{
 					if (parent->left_child->imbalance() > 0)
 						rotate_left(parent->left_child);
@@ -683,10 +696,7 @@ namespace ft
 			return (__root->n);
 		}
 
-		size_type	max_size()
-		{
-			return alloc.max_size();
-		}
+		size_type	max_size() const;
 
 		bool		empty() const
 		{
@@ -753,7 +763,7 @@ namespace ft
 
 		node		*deep_copy_node(const node *n)
 		{
-			node	cp_n = alloc.allocate(1);
+			node	*cp_n = alloc.allocate(1);
 			alloc.construct(cp_n, n->data);
 			cp_n->n = n->n;
 			cp_n->depth = n->depth;

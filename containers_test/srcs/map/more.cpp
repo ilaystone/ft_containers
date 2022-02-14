@@ -5,7 +5,7 @@
 
 struct ft_more {
 	bool	operator()(const T1 &first, const T1 &second) const {
-		return (first > second);
+		return (first < second);
 	}
 };
 

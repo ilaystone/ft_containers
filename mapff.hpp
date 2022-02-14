@@ -248,6 +248,7 @@ namespace ft
 			}
 			return curr;
 		}
+
 		const_iterator lower_bound(const key_type &k) const
 		{
 			return this->lower_bound(k);
