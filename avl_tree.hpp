@@ -17,7 +17,7 @@
 
 namespace ft
 {
-	template < typename T, class Allocator=std::allocator<T> >
+	template < typename T, class M, class K, class Compare=std::less<K>, class Allocator=std::allocator<T> >
 	class avl_tree
 	{
 	public:
@@ -29,6 +29,9 @@ namespace ft
 		typedef typename allocator_type::const_pointer							const_pointer;
 		typedef typename std::allocator_traits<Allocator>::size_type			size_type;
 		typedef typename std::allocator_traits<Allocator>::difference_type		difference_type;
+		typedef K																key_type;
+		typedef M																mapped_type;
+		typedef Compare															key_compare;
 
 	private:
 		class node
@@ -206,8 +209,8 @@ namespace ft
 			typedef ft::bidirectional_iterator_tag				iterator_category;
 			typedef typename allocator_type::value_type			value_type;
 			typedef typename allocator_type::difference_type	difference_type;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename allocator_type::const_pointer		const_pointer;
+			typedef typename allocator_type::const_reference	reference;
+			typedef typename allocator_type::const_pointer		pointer;
 
 			__const_avl_tree_iterator(void)
 			{
@@ -320,12 +323,12 @@ namespace ft
 				return (old);
 			}
 
-			const_reference				operator*(void) const
+			reference				operator*(void) const
 			{
-				return ((const_reference)(__ptr->data));
+				return ((reference)(__ptr->data));
 			}
 
-			const_pointer				operator->(void) const
+			pointer				operator->(void) const
 			{
 				return (&(__ptr->data));
 			}
@@ -333,6 +336,7 @@ namespace ft
 		}; // class __const_avl_tree_iterator
 
 		avl_tree(void)
+		:	__comp()
 		{
 			__root = alloc.allocate(1);
 			alloc.construct(__root);
@@ -353,7 +357,9 @@ namespace ft
 
 		avl_tree						&operator=(const avl_tree &rhs)
 		{
+			this->~avl_tree();
 			__root = deep_copy_node(rhs.__root);
+			__comp = rhs.__comp;
 			return (*this);
 		}
 
@@ -371,9 +377,29 @@ namespace ft
 				return (false);
 		}
 
-		bool							operator!=(const avl_tree &rhs)
+		bool							operator!=(const avl_tree &rhs) const
 		{
 			return (!(*this == rhs));
+		}
+
+		friend bool						operator<(const avl_tree &lhs, const avl_tree &rhs)
+		{
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		}
+
+		friend bool						operator<=(const avl_tree &lhs, const avl_tree &rhs)
+		{
+			return !(rhs < lhs);
+		}
+
+		friend bool						operator>(const avl_tree &lhs, const avl_tree &rhs)
+		{
+			return rhs < lhs;
+		}
+
+		friend bool						operator>=(const avl_tree &lhs, const avl_tree &rhs)
+		{
+			return !(lhs < rhs);
 		}
 
 		__avl_tree_iterator				begin(void)
@@ -439,7 +465,7 @@ namespace ft
 			while (true)
 			{
 				++parent->n;
-				if (parent == __root || t < parent->data)
+				if (parent == __root || __comp(t.first, parent->data.first))
 				{
 					if (parent->left_child)
 						parent = parent->left_child;
@@ -696,7 +722,14 @@ namespace ft
 			return (__root->n);
 		}
 
-		size_type	max_size() const;
+		size_type	max_size() const
+		{
+			size_t num = sizeof(key_type) >= sizeof(mapped_type) ? sizeof(key_type) : sizeof(mapped_type);
+			if (num == 1)
+				return (std::numeric_limits<difference_type>::max() / 16);
+
+			return ((std::numeric_limits<difference_type>::max() / (num + 16)));
+		}
 
 		bool		empty() const
 		{
@@ -714,6 +747,7 @@ namespace ft
 
 		NodeAlloc	alloc;
 		node		*__root;
+		key_compare	__comp;
 	private:
 		void	rotate_left(node *n)
 		{
@@ -798,8 +832,8 @@ namespace ft
 
 
 	}; // class avl_tree
-	template< typename T>
-	void	swap(avl_tree<T> &lhs, avl_tree<T> &rhs)
+	template< typename T, class M, class K>
+	void	swap(avl_tree<T, M, K> &lhs, avl_tree<T, M, K> &rhs)
 	{
 		lhs.swap(rhs);
 	}

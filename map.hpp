@@ -23,6 +23,7 @@ namespace ft
 		class Alloc = std::allocator<ft::pair<const Key,T> > // map::allocator_type
 		>
 	class map {
+		typedef ft::map<Key, T, Compare, Alloc>									__base;
 	public:
 		// ******************************* Aliases ******************************* //
 		typedef Key																key_type;
@@ -39,7 +40,8 @@ namespace ft
 
 		typedef typename std::allocator_traits<Alloc>::template
 			rebind_alloc<value_type>::other										__pair_alloc_type;
-		typedef	avl_tree<value_type, __pair_alloc_type>							AVT_type;
+		typedef	avl_tree<value_type, mapped_type, key_type, key_compare, __pair_alloc_type>	
+			AVT_type;
 
 		typedef typename AVT_type::__avl_tree_iterator							iterator;
 		typedef typename AVT_type::__const_avl_tree_iterator					const_iterator;
@@ -76,7 +78,10 @@ namespace ft
 			__alloc(alloc)
 		{
 			for (Ite it = first; it != last; it++)
-				__ptr.insert(*it);
+			{
+				if (count((*it).first) == 0)
+					__ptr.insert(*it);
+			}
 		}
 		map(const map &src)
 		{
@@ -139,11 +144,7 @@ namespace ft
 		}
 		size_type	max_size(void) const
 		{
-			size_t num = sizeof(key_type) >= sizeof(mapped_type) ? sizeof(key_type) : sizeof(mapped_type);
-			if (num == 1)
-                return (std::numeric_limits<difference_type>::max() / 16);
-
-			return ((std::numeric_limits<difference_type>::max() / (num + 16)));
+			return __ptr.max_size();
 		}
 		bool		empty(void) const
 		{
@@ -210,7 +211,7 @@ namespace ft
 
 		void						swap(map &x)
 		{
-			ft::swap(*this, x);
+			this->__ptr.swap(x.__ptr);
 		}
 		void						clear(void)
 		{
@@ -313,6 +314,18 @@ namespace ft
 			return allocator_type();
 		}
 
+	// ************************** Base ************************************ //
+	public:
+		AVT_type	&_m_base()
+		{
+			return __ptr;
+		}
+
+		const AVT_type	&_m_base() const
+		{
+			return __ptr;
+		}
+
 	};
 
 	template <class Key, class T, class Compare, class Alloc>
@@ -329,6 +342,43 @@ namespace ft
 		}
 	};
 
+	// define relational operations
+	template <class Key, class T, class Compare, class Alloc>
+	inline bool
+	operator==(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+	{
+		return lhs._m_base() == rhs._m_base();
+	}
+	template <class Key, class T, class Compare, class Alloc>
+	inline bool
+	operator!=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+	{
+		return lhs._m_base() != rhs._m_base();
+	}
+	template <class Key, class T, class Compare, class Alloc>
+	inline bool
+	operator<(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+	{
+		return lhs._m_base() < rhs._m_base();
+	}
+	template <class Key, class T, class Compare, class Alloc>
+	inline bool
+	operator<=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+	{
+		return lhs._m_base() <= rhs._m_base();
+	}
+	template <class Key, class T, class Compare, class Alloc>
+	inline bool
+	operator>(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+	{
+		return lhs._m_base() > rhs._m_base();
+	}
+	template <class Key, class T, class Compare, class Alloc>
+	inline bool
+	operator>=(const map<Key, T, Compare, Alloc> &lhs, const map<Key, T, Compare, Alloc> &rhs)
+	{
+		return lhs._m_base() >= rhs._m_base();
+	}
 }
 
 #endif

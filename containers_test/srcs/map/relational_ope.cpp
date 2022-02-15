@@ -36,7 +36,7 @@ int		main(void)
 	cmp(mp1, mp2); // 4
 	cmp(mp2, mp1); // 5
 
-	swap(mp1, mp2);
+	TESTED_NAMESPACE::swap(mp1, mp2);
 
 	cmp(mp1, mp2); // 6
 	cmp(mp2, mp1); // 7

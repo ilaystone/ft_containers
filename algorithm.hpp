@@ -55,14 +55,14 @@ namespace ft
 		}
 		return true;
 	}
-	/**
-	 * @brief swaps two elements @a and @b classes that make use of this
-	 * 	should have copy constructor implemented
-	 * 
-	 * @tparam U type of objects to swap
-	 * @param a first object
-	 * @param b second object
-	 */
+	// /**
+	//  * @brief swaps two elements @a and @b classes that make use of this
+	//  * 	should have copy constructor implemented
+	//  * 
+	//  * @tparam U type of objects to swap
+	//  * @param a first object
+	//  * @param b second object
+	//  */
 	template < typename T >
 	void swap(T &a, T &b)
 	{
